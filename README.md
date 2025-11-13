@@ -1,6 +1,6 @@
 # HEATERs — スコットランド日本語クラシファイド MVP
 
-このプロジェクトは、ユーザーの企画書（賃貸・求人・売買・イベント・レッスン・サービス・口コミ・相談・保証人マッチング・乗り合い など）を元に、MixBのような日本語クラシファイドサイトの最小実行可能製品（MVP）を静的サイトとして実装したものです。フロントエンドのみで動作し、データ永続化には提供された RESTful Table API を利用します。
+このプロジェクトは、ユーザーの企画書（賃貸・求人・売買・イベント・レッスン・サービス・口コミ・相談・保証人マッチング・乗り合い など）を元に、MixBのような日本語クラシファイドサイトの最小実行可能製品（MVP）を実装したものです。フロントエンドに加え、JSON ファイルを永続化に利用する Node.js 製の簡易 RESTful API サーバーを同梱しています。
 
 ## 完了した機能
 - トップページ（人気カテゴリ・新着表示・検索フォーム）
@@ -11,6 +11,18 @@
 - アイコン: Font Awesome
 - 共有ユーティリティ（APIラッパ、カテゴリ/都市定義、カードUI、フォーマッタ）
 - データスキーマ: `posts` テーブル（id, title, category, city, location, price, price_unit, description, images, tags, contact_*, external_url, admin_code, expires_at, published）
+
+## バックエンド（RESTful Table API）
+
+- `node server/index.js`
+- デフォルトポート: `http://localhost:3000`
+- 永続化: `data/posts.json`
+- 対応テーブル: `posts`
+- 主なエンドポイント:
+  - `GET /tables/posts?page=1&limit=10&search=foo&sort=-created_at`
+  - `GET /tables/posts/{id}`
+  - `POST /tables/posts`
+  - `PATCH /tables/posts/{id}`
 
 ## エントリURI（パスと主なクエリ）
 - `/index.html` — トップ
@@ -56,4 +68,4 @@
 
 ---
 
-現状はフロントエンドのみで構築しており、サーバーサイドの認証やファイル保存は行っていません。必要に応じて、RESTful Table API を活用した範囲で拡張していきます。
+サーバーサイドの認証やファイル保存は行っていませんが、JSON ベースのデータストアを用いた簡易 API を同梱しています。必要に応じて、RESTful Table API を活用した範囲で拡張していきます。
