@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>投稿詳細 | HEATERs</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="font-inter bg-slate-50 text-slate-800">
+  <header class="bg-white border-b sticky top-0 z-30">
+    <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+      <a href="index.html" class="font-semibold text-xl">HEATERs</a>
+      <a href="list.html" class="text-sm text-indigo-700 hover:underline">一覧へ</a>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-4 py-6">
+    <article id="post" class="bg-white border rounded-lg p-4"></article>
+    <section class="mt-6">
+      <h2 class="font-semibold mb-3">関連投稿</h2>
+      <div id="related" class="grid md:grid-cols-2 gap-3"></div>
+    </section>
+  </main>
+
+  <script type="module" src="js/utils.js"></script>
+  <script type="module" src="js/view.js"></script>
+</body>
+</html>
