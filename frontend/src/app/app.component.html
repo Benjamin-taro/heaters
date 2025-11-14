@@ -1,0 +1,20 @@
+<header class="app-header">
+  <div class="container header-inner">
+    <a class="brand" routerLink="/">
+      <span class="logo">🔥</span>
+      <span class="title">HEATERs</span>
+    </a>
+    <nav>
+      <a routerLink="/posts" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">投稿一覧</a>
+      <a routerLink="/posts/new" routerLinkActive="active">新規投稿</a>
+    </nav>
+  </div>
+</header>
+<main class="container">
+  <router-outlet></router-outlet>
+</main>
+<footer class="app-footer">
+  <div class="container">
+    <span>© {{ new Date().getFullYear() }} HEATERs Classifieds</span>
+  </div>
+</footer>
