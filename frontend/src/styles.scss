@@ -1,0 +1,160 @@
+@use 'sass:color';
+
+:root {
+  color-scheme: light;
+  font-family: 'Noto Sans JP', 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.card {
+  border-radius: 1rem;
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+  padding: 1.5rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.form-field label {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+input[type='text'],
+input[type='number'],
+input[type='email'],
+textarea,
+select {
+  border: 1px solid #cbd5f5;
+  border-radius: 0.75rem;
+  padding: 0.65rem 0.9rem;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #4f46e5;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 9999px;
+  border: none;
+  font-weight: 600;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 25px rgba(99, 102, 241, 0.25);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background-color: #eef2ff;
+  color: #4338ca;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.post-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 240px;
+}
+
+.post-card h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.post-card .meta {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.post-card .price {
+  font-size: 1rem;
+  color: #4f46e5;
+  font-weight: 600;
+}
+
+.post-card .excerpt {
+  font-size: 0.9rem;
+  color: #475569;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.alert {
+  background-color: #f8fafc;
+  border: 1px dashed #cbd5f5;
+  border-radius: 1rem;
+  padding: 1rem 1.5rem;
+  color: #475569;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1rem 2rem;
+  }
+
+  .card {
+    border-radius: 1.25rem;
+    padding: 1.25rem;
+  }
+}
