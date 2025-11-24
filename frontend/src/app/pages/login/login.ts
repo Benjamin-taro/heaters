@@ -4,7 +4,7 @@ import { AsyncPipe, NgIf} from '@angular/common';
 import { FormsModule} from '@angular/forms';
 
 @Component({
-  selector: 'app-header',
+  selector: 'app-login-page',
   standalone: true,
   imports: [AsyncPipe, NgIf, FormsModule],
   template: `
@@ -47,7 +47,7 @@ import { FormsModule} from '@angular/forms';
     </ng-template>
   `,
 })
-export class HeaderComponent {
+export class Login {
   auth = inject(AuthService);
 
   email = '';
