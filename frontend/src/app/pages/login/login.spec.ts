@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { Auth } from '@angular/fire/auth';
 import { Login } from './login';
 
 describe('Login', () => {
@@ -8,11 +8,17 @@ describe('Login', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Login]
+      imports: [Login],
+      providers: [
+        {
+          provide: Auth,
+          useValue: {} as Auth,
+        },
+      ],
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Login);
+    const fixture = TestBed.createComponent(Login);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
