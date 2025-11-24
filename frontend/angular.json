@@ -3,44 +3,48 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "heaters-frontend": {
+    "heaters": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular/build:application",
           "options": {
-            "outputPath": "dist/heaters-frontend",
-            "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
               "zone.js"
             ],
+            "tsConfig": "tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
             "assets": [
-              "src/favicon.ico",
-              "src/assets"
+              {
+                "glob": "**/*",
+                "input": "public"
+              }
             ],
             "styles": [
               "src/styles.scss"
-            ],
-            "inlineStyleLanguage": "scss",
-            "tsConfig": "tsconfig.app.json"
+            ]
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
                 }
               ],
               "outputHashing": "all"
@@ -48,41 +52,28 @@
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.development.ts"
-                }
-              ]
+              "sourceMap": true
             }
           },
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "proxyConfig": "proxy.conf.json"
-          },
+          "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "heaters-frontend:build:production"
+              "buildTarget": "heaters:build:production"
             },
             "development": {
-              "buildTarget": "heaters-frontend:build:development",
-              "proxyConfig": "proxy.conf.json"
+              "buildTarget": "heaters:build:development"
             }
           },
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "browserTarget": "heaters-frontend:build"
-          }
+          "builder": "@angular/build:extract-i18n"
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:karma",
           "options": {
             "polyfills": [
               "zone.js",
@@ -91,8 +82,10 @@
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "src/favicon.ico",
-              "src/assets"
+              {
+                "glob": "**/*",
+                "input": "public"
+              }
             ],
             "styles": [
               "src/styles.scss"
@@ -103,6 +96,6 @@
     }
   },
   "cli": {
-    "analytics": "20b86e18-c1f6-4e7c-bf9f-1ab8fec6eacc"
+    "analytics": "c0414358-ddc2-4687-9838-6b754be09c20"
   }
 }
