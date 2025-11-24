@@ -1,67 +1,71 @@
-# HEATERs — スコットランド日本語クラシファイド
+# HEATERs — スコットランド日本語クラシファイド MVP
 
-コミュニティ主導のクラシファイドサービス「HEATERs」の MVP 実装です。Node.js 製の JSON バックエンド API と、Angular 17 で再構築したフロントエンド SPA をひとつのリポジトリで管理しています。
+このプロジェクトは、ユーザーの企画書（賃貸・求人・売買・イベント・レッスン・サービス・口コミ・相談・保証人マッチング・乗り合い など）を元に、MixBのような日本語クラシファイドサイトの最小実行可能製品（MVP）を実装したものです。フロントエンドに加え、JSON ファイルを永続化に利用する Node.js 製の簡易 RESTful API サーバーを同梱しています。
 
-## プロジェクト構成
+## 完了した機能
+- トップページ（人気カテゴリ・新着表示・検索フォーム）
+- 投稿一覧ページ（検索・カテゴリ/都市フィルタ UI・簡易ページャ）
+- 投稿詳細ページ（本文・価格/連絡先・関連投稿）
+- 新規投稿フォーム（テーブル `posts` に保存）
+- UI はモバイルファーストで Tailwind CSS を採用
+- アイコン: Font Awesome
+- 共有ユーティリティ（APIラッパ、カテゴリ/都市定義、カードUI、フォーマッタ）
+- データスキーマ: `posts` テーブル（id, title, category, city, location, price, price_unit, description, images, tags, contact_*, external_url, admin_code, expires_at, published）
 
-| ディレクトリ | 説明 |
-| --- | --- |
-| `server/` | JSON ファイルをデータストアに利用する RESTful API サーバー（Node.js 標準モジュールのみで構築） |
-| `data/posts.json` | `posts` テーブルの永続化ファイル |
-| `frontend/` | Angular 17 ベースのフロントエンドアプリケーション |
+## バックエンド（RESTful Table API）
 
-旧来の静的 HTML / JS ファイル（`index.html`, `list.html` など）は互換性維持のため残していますが、今後の開発は Angular アプリを中心に進めてください。
-
-## セットアップ
-
-1. **バックエンド API を起動**
-   ```bash
-   npm install
-   npm run start
-   ```
-   3000 番ポートで `tables/posts` エンドポイントが利用できます。JSON ストレージは `data/posts.json` に保存されます。
-
-2. **フロントエンド開発サーバーを起動**
-   ```bash
-   cd frontend
-   npm install
-   npm start
-   ```
-   デフォルトで `http://localhost:4200` にホストされます。開発サーバーは `/tables` へのリクエストをバックエンド (`http://localhost:3000`) にプロキシするため、Angular アプリからは相対パスのまま API にアクセスできます。
-
-3. ブラウザで `http://localhost:4200` を開き、Angular 製の UI から投稿を閲覧・作成できます。
-
-## フロントエンド機能（Angular）
-
-- **トップページ**: コミュニティの紹介と主要導線をカードスタイルで表示。
-- **投稿一覧**: キーワード / カテゴリ / 都市で絞り込み、REST API から取得したデータをクライアントサイドで追加フィルタリング。ページ番号はクエリパラメータとして保持します。
-- **投稿詳細**: 本文・価格・連絡先・関連投稿（同一都市）を表示。
-- **新規投稿フォーム**: Angular のリアクティブフォームでバリデーションを行い、API へ `POST`。タグ・画像 URL・掲載期限の補助処理付き。
-- **UI スタイル**: SCSS ベースの軽量デザイン。カード・ボタン・バッジなどの共通スタイルを `src/styles.scss` で定義。
-
-## バックエンド API
-
-- 起動コマンド: `npm run start`
-- 主要エンドポイント:
-  - `GET /tables/posts?page=1&limit=10&search=foo`
-  - `GET /tables/posts/:id`
+- `node server/index.js`
+- デフォルトポート: `http://localhost:3000`
+- 永続化: `data/posts.json`
+- 対応テーブル: `posts`
+- 主なエンドポイント:
+  - `GET /tables/posts?page=1&limit=10&search=foo&sort=-created_at`
+  - `GET /tables/posts/{id}`
   - `POST /tables/posts`
-  - `PATCH /tables/posts/:id`
-- 仕様の詳細は `server/index.js` および `server/storage.js` を参照してください。
+  - `PATCH /tables/posts/{id}`
 
-## テスト
+## エントリURI（パスと主なクエリ）
+- `/index.html` — トップ
+- `/list.html` — 一覧。クエリ:
+  - `search` 文字列検索
+  - `category` カテゴリ完全一致
+  - `city` 都市完全一致
+  - `page` ページ番号（簡易）
+- `/new.html` — 新規投稿
+- `/view.html?id=RECORD_ID` — 投稿詳細
+- RESTful Table API（相対URL）
+  - `GET tables/posts?page=1&limit=10&search=foo&sort=-created_at`
+  - `GET tables/posts/{id}`
+  - `POST tables/posts`（本文参照）
 
-- フロントエンド: `cd frontend && npm test`
-- バックエンド: 現時点では自動テスト未整備（`curl` などで手動確認）。
+## 未実装/今後の候補
+- 投稿の編集・削除（admin_code 照合）
+- 画像ギャラリー表示、画像アップロード（現状はURL指定のみ）
+- 高度なサーバーサイド検索/フィルタ（カテゴリ・都市をAPI側に反映）
+- スパム対策（投稿レート制限、簡易認証、reCAPTCHA相当は非対応）
+- 広告枠/PR枠表示、アクセス解析
+- 記事（生活情報ブログ）セクション
+- マルチ言語（日本語/英語）
 
-## 今後の拡張候補
+## 推奨次ステップ
+1. 投稿編集・削除ページの追加（`admin_code` で PATCH/DELETE）
+2. 一覧ページのソートやページネーションの改善
+3. 画像のサムネイル表示とカルーセル導入
+4. 生活記事用の `articles` テーブル設計
+5. 口コミ専用の評価フィールド追加（星評価など）
 
-- 投稿編集・削除機能（`admin_code` 認証を利用）
-- 画像アップロードやサムネイル表示
-- Angular アプリからのサーバーサイド検索（カテゴリ / 都市を API クエリに反映）
-- 認証・レートリミットなどのスパム対策
-- CI/CD パイプライン整備とテスト自動化
+## プロジェクト名・目的・主要機能
+- 名称: HEATERs
+- 目的: スコットランドに特化した日本語クラシファイド＋生活情報コミュニティ
+- 主要機能: 掲示板投稿（賃貸・求人等）、検索・閲覧、簡易投稿フォーム
+
+## パブリックURL
+- デプロイ方法: To deploy your website and make it live, please go to the Publish tab where you can publish your project with one click. The Publish tab will handle all deployment processes automatically and provide you with the live website URL.
+
+## データモデル
+- テーブル: `posts`
+- フィールド: `id`(system), `title`, `category`, `city`, `location`, `price`, `price_unit`, `description`, `images[]`, `tags[]`, `contact_name`, `contact_email`, `contact_phone`, `external_url`, `admin_code`, `expires_at`, `published`, ほかシステムフィールド（created_at, updated_at など）
 
 ---
 
-API とフロントエンドが別プロセスになったことで、サービス拡張時にもそれぞれ独立してスケールできる構成になりました。必要に応じてリポジトリ分割やモノレポ化などを検討してください。
+サーバーサイドの認証やファイル保存は行っていませんが、JSON ベースのデータストアを用いた簡易 API を同梱しています。必要に応じて、RESTful Table API を活用した範囲で拡張していきます。
