@@ -21,7 +21,6 @@
   "private": true,
   "dependencies": {
     "@angular/common": "^20.3.14",
-    "@angular/compiler": "^20.1.0",
     "@angular/core": "^20.3.14",
     "@angular/fire": "^20.0.1",
     "@angular/forms": "^20.3.14",
@@ -38,7 +37,8 @@
   "devDependencies": {
     "@angular/build": "^20.1.1",
     "@angular/cli": "^20.1.1",
-    "@angular/compiler-cli": "^20.1.0",
+    "@angular/compiler": "^20.3.14",
+    "@angular/compiler-cli": "^20.3.14",
     "@types/jasmine": "~5.1.0",
     "jasmine-core": "~5.8.0",
     "karma": "~6.4.0",
