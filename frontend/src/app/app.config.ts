@@ -9,6 +9,9 @@ import { firebaseConfig } from './firebase.config';
 
 import { routes } from './app.routes';
 
+import { providePrimeNG } from 'primeng/config';
+import Aura from '@primeuix/themes/aura'; 
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
@@ -17,5 +20,10 @@ export const appConfig: ApplicationConfig = {
     provideFirebaseApp(() => initializeApp(firebaseConfig)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
+    providePrimeNG({
+      theme:{
+        preset: Aura,
+      }
+    })
   ]
 };
