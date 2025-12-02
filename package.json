@@ -1,9 +1,0 @@
-{
-  "name": "heaters-backend",
-  "version": "1.0.0",
-  "description": "RESTful API server and JSON-based data store for HEATERs classifieds",
-  "main": "server/index.js",
-  "scripts": {
-    "start": "node server/index.js"
-  }
-}
