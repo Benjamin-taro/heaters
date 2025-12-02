@@ -1,23 +1,40 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { of, BehaviorSubject } from 'rxjs';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
 
 import { Listings } from './listings';
+import { PostService } from '../../core/post';
 
 describe('Listings', () => {
-  let component: Listings;
-  let fixture: ComponentFixture<Listings>;
+  let postServiceMock: jasmine.SpyObj<PostService>;
+  let paramMapSubject: BehaviorSubject<any>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [Listings]
-    })
-    .compileComponents();
+    postServiceMock = jasmine.createSpyObj<PostService>('PostService', ['getPosts']);
+    postServiceMock.getPosts.and.returnValue(of([]));  // 空配列を返すダミー
 
-    fixture = TestBed.createComponent(Listings);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    // /posts または /posts/:type の paramMap を模倣する Subject
+    paramMapSubject = new BehaviorSubject(
+      convertToParamMap({}) // type なし（= 全部）という状態
+    );
+
+    await TestBed.configureTestingModule({
+      imports: [Listings],
+      providers: [
+        { provide: PostService, useValue: postServiceMock },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            paramMap: paramMapSubject.asObservable(),
+          },
+        },
+      ],
+    }).compileComponents();
   });
 
   it('should create', () => {
+    const fixture = TestBed.createComponent(Listings);
+    const component = fixture.componentInstance;
     expect(component).toBeTruthy();
   });
 });
