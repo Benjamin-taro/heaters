@@ -1,12 +1,39 @@
 <!-- pages/posting/posting.html -->
-<p>POSTING</p>
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <input formControlName="title" placeholder="Title" />
-  <textarea formControlName="body" placeholder="Content"></textarea>
+<div class="posting-container">
+  <h2>New Post</h2>
 
-  <button type="submit" [disabled]="form.invalid || loading || !currentUserId">
-    Post
-  </button>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="posting-form">
+    <div class="field">
+      <label for="type">カテゴリー</label>
+      <select id="type" formControlName="type">
+        <option value="buy-sell">Buy & Sell</option>
+        <option value="event">Event</option>
+        <option value="article">Article / 口コミ</option>
+      </select>
+    </div>
 
-  <p *ngIf="!currentUserId">※Please log in to post</p>
-</form>
+    <div class="field">
+      <label for="title">タイトル</label>
+      <input id="title" formControlName="title" placeholder="例：IKEAのテーブル譲ります" />
+    </div>
+
+    <div class="field">
+      <label for="body">内容</label>
+      <textarea
+        id="body"
+        formControlName="body"
+        rows="6"
+        placeholder="詳細や条件などを書いてください"
+      ></textarea>
+    </div>
+
+    <div class="actions">
+      <button type="submit" [disabled]="form.invalid || loading || !currentUserId">
+        Post
+      </button>
+      <p *ngIf="!currentUserId" class="login-hint">
+        ※投稿するにはログインが必要です
+      </p>
+    </div>
+  </form>
+</div>

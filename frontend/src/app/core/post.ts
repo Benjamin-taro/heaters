@@ -4,8 +4,13 @@ import {
   collection,
   collectionData,
   addDoc,
+  query,
+  orderBy,
+  where
 } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
+
+export type PostType = 'buy-sell' | 'event' | 'article';
 
 export interface Post {
   id?: string;
@@ -13,6 +18,8 @@ export interface Post {
   body: string;
   createdAt: number;
   userId: string;
+
+  type?: PostType;
 }
 
 @Injectable({
@@ -22,8 +29,19 @@ export class PostService {
   private firestore = inject(Firestore);
   private postsRef = collection(this.firestore, 'posts');
 
-  getPosts(): Observable<Post[]> {
-    return collectionData(this.postsRef, { idField: 'id' }) as Observable<Post[]>;
+  getPosts(type?: PostType): Observable<Post[]> {
+    let q;
+    if (type) {
+      q = query(
+        this.postsRef,
+        where('type', '==', type),
+        orderBy('createdAt', 'desc'),
+      );
+    } else {
+      q = query(this.postsRef, orderBy('createdAt', 'desc'));
+    }
+
+    return collectionData(q, { idField: 'id' }) as Observable<Post[]>;
   }
 
   createPost(post: Omit<Post, 'id' | 'createdAt'>) {

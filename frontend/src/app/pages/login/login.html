@@ -1,37 +1,54 @@
-<div *ngIf="auth.user$ | async as user; else loggedOut">
-    <span>Hi, {{ user.displayName || user.email }}</span>
-    <button type="button" (click)="logout()">Logout</button>
-</div>
+<!-- pages/login/login.html -->
+<div class="auth-container">
+  <h2>Login</h2>
 
-<ng-template #loggedOut>
-    <button type="button" (click)="loginWithGoogle()">Login with Google</button>
-    <p-button label="Submit" />
-    <form (ngSubmit)="loginEmail()">
-    <div>
-        <label>
-        Email
-        <input
+  <!-- ログイン中 -->
+  <div *ngIf="auth.user$ | async as user; else loggedOut" class="auth-card logged-in">
+    <p class="greeting">
+      Hi, <strong>{{ user.displayName || user.email }}</strong>
+    </p>
+    <button type="button" (click)="logout()">Logout</button>
+  </div>
+
+  <!-- 未ログイン -->
+  <ng-template #loggedOut>
+    <div class="auth-card">
+      <button type="button" class="google-btn" (click)="loginWithGoogle()">
+        Login with Google
+      </button>
+
+      <div class="divider">
+        <span>or</span>
+      </div>
+
+      <form (ngSubmit)="loginEmail()" class="auth-form">
+        <div class="field">
+          <label for="email">Email</label>
+          <input
+            id="email"
             type="email"
             name="email"
             [(ngModel)]="email"
             required
-        />
-        </label>
-    </div>
+          />
+        </div>
 
-    <div>
-        <label>
-        Password
-        <input
+        <div class="field">
+          <label for="password">Password</label>
+          <input
+            id="password"
             type="password"
             name="password"
             [(ngModel)]="password"
             required
-        />
-        </label>
-    </div>
+          />
+        </div>
 
-    <button type="submit">Login with Email</button>
-    <button type="button" (click)="registerEmail()">Sign up</button>
-    </form>
-</ng-template>
+        <div class="actions">
+          <button type="submit">Login with Email</button>
+          <button type="button" class="link-btn" (click)="registerEmail()">Sign up</button>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+</div>

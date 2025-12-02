@@ -23,6 +23,7 @@ export class Posting {
     private authService: AuthService,
   ) {
       this.form = this.fb.group({
+      type: ['buy-sell', Validators.required],
       title: ['', Validators.required],
       body: ['', Validators.required],
     });
@@ -39,6 +40,7 @@ export class Posting {
     this.loading = true;
     try {
       await this.postService.createPost({
+        type: this.form.value.type!,
         title: this.form.value.title!,
         body: this.form.value.body!,
         userId: this.currentUserId,
