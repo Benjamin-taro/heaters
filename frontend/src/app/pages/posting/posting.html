@@ -1,1 +1,12 @@
+<!-- pages/posting/posting.html -->
 <p>POSTING</p>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <input formControlName="title" placeholder="Title" />
+  <textarea formControlName="body" placeholder="Content"></textarea>
+
+  <button type="submit" [disabled]="form.invalid || loading || !currentUserId">
+    Post
+  </button>
+
+  <p *ngIf="!currentUserId">※Please log in to post</p>
+</form>
