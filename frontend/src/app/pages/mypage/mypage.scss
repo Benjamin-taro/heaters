@@ -1,0 +1,93 @@
+:host {
+  display: block;
+  padding: 2rem 1.5rem;
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: system-ui, sans-serif;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #333;
+}
+
+/* --- User card --- */
+.user-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem 1.8rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #eee;
+  margin-bottom: 2rem;
+  animation: fadeIn 0.4s ease;
+}
+
+.user-card p {
+  font-size: 1.1rem;
+  margin-bottom: 0.8rem;
+}
+
+.user-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.user-card li {
+  padding: 0.3rem 0;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.user-card strong {
+  margin-right: 0.4rem;
+  color: #111;
+}
+
+/* --- Buttons --- */
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.8rem;
+}
+
+.action-buttons a {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  background: #007bff;
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: background 0.2s ease;
+}
+
+.action-buttons a:hover {
+  background: #005ecb;
+}
+
+/* --- Logged out --- */
+.logged-out {
+  text-align: center;
+  background: #fff3f3;
+  padding: 1rem;
+  border-radius: 10px;
+  border: 1px solid #ffd4d4;
+  color: #b60000;
+  font-size: 1rem;
+}
+
+/* --- Animations --- */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

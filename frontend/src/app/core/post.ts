@@ -6,7 +6,9 @@ import {
   addDoc,
   query,
   orderBy,
-  where
+  where,
+  docData,
+  doc
 } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
@@ -43,7 +45,11 @@ export class PostService {
 
     return collectionData(q, { idField: 'id' }) as Observable<Post[]>;
   }
-
+  getPost(id: string): Observable<Post | undefined> {
+    const ref = doc(this.firestore, `posts/${id}`);
+    return docData(ref, { idField: 'id' }) as Observable<Post | undefined>;
+  }
+  
   createPost(post: Omit<Post, 'id' | 'createdAt'>) {
     return addDoc(this.postsRef, {
       ...post,

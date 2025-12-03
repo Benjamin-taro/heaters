@@ -3,17 +3,33 @@ import { Home } from './pages/home/home';
 import { Listings } from './pages/listings/listings';
 import { Posting } from './pages/posting/posting'; 
 import { Login } from './pages/login/login';
-//import { MyPage } from './pages/mypage/mypage';      // 後で作る
-//import { PostDetailPage } from './pages/post-detail/post-detail'; // 後で作る
+import { MyPage } from './pages/mypage/mypage';  
+import { PostDetail } from './pages/post-detail/post-detail'; 
 
 export const routes: Routes = [
-    { path: '', redirectTo: 'home', pathMatch: 'full' },
-    { path: 'posts', component: Listings },
-    { path: 'posts/:type', component: Listings },
-    { path: 'posting', component: Posting },
-    { path: 'login', component: Login },
-    { path: 'postdetails/:id', component: Home }, // 仮置き
-    { path: 'mypage', component: Home }, // 仮置き
-    { path: 'home', component: Home },
-    { path: '**', redirectTo: '' },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
+
+  // ホーム
+  { path: 'home', component: Home },
+
+  // 投稿一覧
+  { path: 'listing', component: Listings },
+
+  // 種類別一覧 (buy-sell, event, article)
+  { path: 'listing/type/:type', component: Listings },
+
+  // 投稿詳細
+  { path: 'posts/:id', component: PostDetail },
+
+  // 新規投稿
+  { path: 'posting', component: Posting },
+
+  // ログイン
+  { path: 'login', component: Login },
+
+  // マイページ
+  { path: 'mypage', component: MyPage },
+
+  // 404
+  { path: '**', redirectTo: 'home' },
 ];

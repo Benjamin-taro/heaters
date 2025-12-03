@@ -1,0 +1,21 @@
+<h1>My Page</h1>
+
+<div *ngIf="auth.user$ | async as user; else loggedOut" class="user-card">
+  <p>Hi, {{ user.displayName || user.email }} 👋</p>
+
+  <ul>
+    <li><strong>UID:</strong> {{ user.uid }}</li>
+    <li><strong>Email:</strong> {{ user.email }}</li>
+  </ul>
+
+  <div class="action-buttons">
+    <a routerLink="/listing">自分の投稿を見る</a>
+    <a routerLink="/posting">新しい投稿を作る</a>
+  </div>
+</div>
+
+<ng-template #loggedOut>
+  <div class="logged-out">
+    <p>ログインしていません。</p>
+  </div>
+</ng-template>
