@@ -1,0 +1,37 @@
+<!-- src/app/pages/listings/listings.html -->
+<div class="listings-container">
+  <h2>Listing</h2>
+
+  <div *ngIf="posts$ | async as posts; else loading">
+    <div *ngIf="posts.length === 0" class="empty-message">
+      投稿がありません。
+    </div>
+
+    <div *ngFor="let post of posts" class="post-card">
+      <div class="post-header">
+        <span class="post-type" *ngIf="post.type">
+          {{ post.type === 'buy-sell' ? 'Buy & Sell' : post.type === 'event' ? 'Event' : 'Article' }}
+        </span>
+
+        <h3 class="post-title">
+          <a [routerLink]="['/posts', post.id]">
+            {{ post.title }}
+          </a>
+        </h3>
+      </div>
+
+      <p class="post-body">
+        {{ post.body }}
+      </p>
+
+      <div class="post-meta">
+        <span>投稿日: {{ post.createdAt | date: 'yyyy/MM/dd HH:mm' }}</span>
+        <span class="post-user">userId: {{ post.userId }}</span>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #loading>
+    <p class="loading">Loading...</p>
+  </ng-template>
+</div>
