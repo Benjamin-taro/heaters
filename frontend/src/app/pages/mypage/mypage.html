@@ -9,8 +9,13 @@
   </ul>
 
   <div class="action-buttons">
-    <a routerLink="/listing">自分の投稿を見る</a>
-    <a routerLink="/posting">新しい投稿を作る</a>
+  <a
+    [routerLink]="['/listing']"
+    [queryParams]="{ mine: true }"
+  >
+    自分の投稿を見る
+  </a>    
+  <a routerLink="/posting">新しい投稿を作る</a>
   </div>
 </div>
 

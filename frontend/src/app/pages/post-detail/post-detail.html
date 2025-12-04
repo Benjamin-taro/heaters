@@ -1,27 +1,8 @@
+<!-- post-detail.html -->
 <ng-container *ngIf="post$ | async as post; else loading">
-  <ng-container *ngIf="post; else notFound">
-    <article class="post-detail">
-      <h1>{{ post.title }}</h1>
-
-      <p class="meta">
-        カテゴリー: {{ post.type || '不明' }}<br />
-        投稿日: {{ post.createdAt | date: 'yyyy/MM/dd HH:mm' }}
-      </p>
-
-      <p class="body">
-        {{ post.body }}
-      </p>
-    </article>
-
-    <a routerLink="/listings">← 投稿一覧に戻る</a>
-  </ng-container>
+  <app-post-detail-view [post]="post ?? null"></app-post-detail-view>
 </ng-container>
 
 <ng-template #loading>
   <p>Loading...</p>
-</ng-template>
-
-<ng-template #notFound>
-  <p>投稿が見つかりませんでした。</p>
-  <a routerLink="/listings">← 投稿一覧に戻る</a>
 </ng-template>

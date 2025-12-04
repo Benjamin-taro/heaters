@@ -1,3 +1,10 @@
-<html>
-    <p>HOME</p>
-</html>
+<div class="home-container">
+  <h1>Home</h1>
+
+  <app-post-list
+    [title]="'最新の投稿'"
+    [posts]="latestPosts$ | async"
+  ></app-post-list>
+
+  <a routerLink="/listing" class="more-link">もっと見る →</a>
+</div>
