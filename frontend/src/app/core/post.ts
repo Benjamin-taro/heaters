@@ -6,7 +6,10 @@ import {
   addDoc,
   query,
   orderBy,
-  where
+  where,
+  docData,
+  doc,
+  limit
 } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
@@ -40,8 +43,51 @@ export class PostService {
     } else {
       q = query(this.postsRef, orderBy('createdAt', 'desc'));
     }
+    return collectionData(q, { idField: 'id' }) as Observable<Post[]>;
+  }
+  getPostsByUser(userId: string, type?: PostType): Observable<Post[]> {
+    let q;
+    if (type) {
+      q = query(
+        this.postsRef,
+        where('userId', '==', userId),
+        where('type', '==', type),
+        orderBy('createdAt', 'desc'),
+      );
+    } else {
+      q = query(
+        this.postsRef,
+        where('userId', '==', userId),
+        orderBy('createdAt', 'desc'),
+      );
+    }
+    return collectionData(q, { idField: 'id' }) as Observable<Post[]>;
+  }
+
+  getPostLatests(limitCount: number, type?: PostType): Observable<Post[]> {
+    let q;
+
+    if (type) {
+      q = query(
+        this.postsRef,
+        where('type', '==', type),
+        orderBy('createdAt', 'desc'),
+        limit(limitCount),
+      );
+    } else {
+      q = query(
+        this.postsRef,
+        orderBy('createdAt', 'desc'),
+        limit(limitCount),
+      );
+    }
 
     return collectionData(q, { idField: 'id' }) as Observable<Post[]>;
+  }
+
+  getPost(id: string): Observable<Post | undefined> {
+    const ref = doc(this.firestore, `posts/${id}`);
+    return docData(ref, { idField: 'id' }) as Observable<Post | undefined>;
   }
 
   createPost(post: Omit<Post, 'id' | 'createdAt'>) {

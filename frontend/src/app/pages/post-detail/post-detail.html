@@ -1,0 +1,8 @@
+<!-- post-detail.html -->
+<ng-container *ngIf="post$ | async as post; else loading">
+  <app-post-detail-view [post]="post ?? null"></app-post-detail-view>
+</ng-container>
+
+<ng-template #loading>
+  <p>Loading...</p>
+</ng-template>
