@@ -1,0 +1,76 @@
+:host {
+  display: block;
+  padding: 2rem 1.5rem;
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: system-ui, sans-serif;
+}
+
+/* --- メインカード --- */
+.post-detail {
+  background: #fff;
+  border-radius: 12px;
+  padding: 2rem 2rem 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  border: 1px solid #eee;
+  animation: fadeIn 0.4s ease;
+}
+
+.post-detail h1 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.meta {
+  font-size: 0.9rem;
+  color: #777;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+/* --- 本文 --- */
+.body {
+  font-size: 1.05rem;
+  color: #444;
+  line-height: 1.7;
+  white-space: pre-line;
+}
+
+/* --- 戻るリンク --- */
+.back-link {
+  display: inline-block;
+  margin-top: 1.8rem;
+  color: #007bff;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.2s ease;
+}
+
+.back-link:hover {
+  color: #005ecb;
+  text-decoration: underline;
+}
+
+/* --- Loading / Not Found --- */
+.loading,
+.not-found {
+  text-align: center;
+  padding: 1rem;
+  color: #444;
+  font-size: 1rem;
+}
+
+/* --- アニメーション --- */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

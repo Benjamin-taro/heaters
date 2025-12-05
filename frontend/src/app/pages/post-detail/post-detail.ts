@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { PostDetailView } from '../../shared/post-detail-view/post-detail-view';
 
 import { PostService, Post } from '../../core/post';
 
 @Component({
   selector: 'app-post-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, PostDetailView],
   templateUrl: './post-detail.html',
   styleUrls: ['./post-detail.scss'],
 })
