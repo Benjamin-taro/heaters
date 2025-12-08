@@ -8,8 +8,15 @@
 
     <div *ngFor="let post of posts" class="post-card">
       <div class="post-header">
+        <!-- カテゴリーバッジ -->
         <span class="post-type" *ngIf="post.type">
-          {{ post.type === 'buy-sell' ? 'Buy & Sell' : post.type === 'event' ? 'Event' : 'Article' }}
+          {{
+            post.type === 'buy-sell'
+              ? 'Buy & Sell'
+              : post.type === 'event'
+                ? 'Event'
+                : 'Article'
+          }}
         </span>
 
         <h3 class="post-title">
@@ -19,12 +26,51 @@
         </h3>
       </div>
 
+      <!-- 共通: 場所 -->
+      <p class="post-location" *ngIf="post.location">
+        📍 {{ post.location }}
+      </p>
+
+      <!-- カテゴリーごとの簡易情報 -->
+      <div class="post-extra">
+        <!-- Buy & Sell -->
+        <ng-container *ngIf="post.type === 'buy-sell'">
+          <span *ngIf="post.buySellIntent">
+            {{ post.buySellIntent === 'buy' ? '買いたい' : '売りたい' }}
+          </span>
+
+          <span *ngIf="post.price != null">
+            ・{{ post.price }} {{ post.priceCurrency || '' }}
+          </span>
+        </ng-container>
+
+        <!-- Event -->
+        <ng-container *ngIf="post.type === 'event'">
+          <span *ngIf="post.eventDate">
+            開催日: {{ post.eventDate | date: 'yyyy/MM/dd' }}
+          </span>
+
+          <span *ngIf="post.maxParticipants != null">
+            ・定員: {{ post.maxParticipants }} 名
+          </span>
+        </ng-container>
+
+        <!-- Article -->
+        <ng-container *ngIf="post.type === 'article'">
+          <span *ngIf="post.articleCategory">
+            カテゴリー: {{ post.articleCategory }}
+          </span>
+        </ng-container>
+      </div>
+
+      <!-- 本文（一覧なので少しだけ） -->
       <p class="post-body">
-        {{ post.body }}
+        {{ post.body | slice:0:100 }}<span *ngIf="post.body.length > 100">…</span>
       </p>
 
       <div class="post-meta">
         <span>投稿日: {{ post.createdAt | date: 'yyyy/MM/dd HH:mm' }}</span>
+        <!-- とりあえず userId のまま。あとでユーザー名引けるようにしてもOK -->
         <span class="post-user">userId: {{ post.userId }}</span>
       </div>
     </div>
