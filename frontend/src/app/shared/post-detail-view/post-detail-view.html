@@ -1,4 +1,3 @@
-<!-- post-detail-view.html -->
 <ng-container *ngIf="post; else notFound">
   <article class="post-detail">
     <h1>{{ post.title }}</h1>
@@ -8,6 +7,54 @@
       投稿日: {{ post.createdAt | date: 'yyyy/MM/dd HH:mm' }}
     </p>
 
+    <!-- 共通: 場所 -->
+    <p *ngIf="post.location">
+      📍 場所: {{ post.location }}
+    </p>
+
+    <!-- --------------------- -->
+    <!-- Buy & Sell 表示部分 -->
+    <!-- --------------------- -->
+    <ng-container *ngIf="post.type === 'buy-sell'">
+
+      <p *ngIf="post.buySellIntent">
+        取引タイプ: 
+        <strong>{{ post.buySellIntent === 'buy' ? '買いたい' : '売りたい' }}</strong>
+      </p>
+
+      <p *ngIf="post.price != null">
+        価格: <strong>{{ post.price }}</strong> {{ post.priceCurrency }}
+      </p>
+
+    </ng-container>
+
+    <!-- --------------------- -->
+    <!-- Event 表示部分 -->
+    <!-- --------------------- -->
+    <ng-container *ngIf="post.type === 'event'">
+
+      <p *ngIf="post.eventDate">
+        開催日: {{ post.eventDate | date: 'yyyy/MM/dd' }}
+      </p>
+
+      <p *ngIf="post.maxParticipants != null">
+        定員: {{ post.maxParticipants }} 名
+      </p>
+
+    </ng-container>
+
+    <!-- --------------------- -->
+    <!-- Article 表示部分 -->
+    <!-- --------------------- -->
+    <ng-container *ngIf="post.type === 'article'">
+      <p *ngIf="post.articleCategory">
+        カテゴリー: {{ post.articleCategory }}
+      </p>
+    </ng-container>
+
+    <hr />
+
+    <!-- 本文 -->
     <p class="body">
       {{ post.body }}
     </p>
