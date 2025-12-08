@@ -1,3 +1,4 @@
+// src/app/core/post.ts
 import { Injectable, inject } from '@angular/core';
 import {
   Firestore,
@@ -17,13 +18,28 @@ export type PostType = 'buy-sell' | 'event' | 'article';
 
 export interface Post {
   id?: string;
+
+  // 共通
   title: string;
   body: string;
   createdAt: number;
   userId: string;
+  type: PostType;
+  location?: string;   // ★ 共通の場所
 
-  type?: PostType;
+  // Buy & Sell
+  buySellIntent?: 'buy' | 'sell';
+  price?: number;
+  priceCurrency?: 'GBP' | 'JPY';
+
+  // Event
+  eventDate?: number;
+  maxParticipants?: number;
+
+  // Article
+  articleCategory?: string;
 }
+
 
 @Injectable({
   providedIn: 'root',
@@ -45,6 +61,7 @@ export class PostService {
     }
     return collectionData(q, { idField: 'id' }) as Observable<Post[]>;
   }
+
   getPostsByUser(userId: string, type?: PostType): Observable<Post[]> {
     let q;
     if (type) {
@@ -90,9 +107,15 @@ export class PostService {
     return docData(ref, { idField: 'id' }) as Observable<Post | undefined>;
   }
 
+  // ここは「id と createdAt 以外」を受け取る形のままでOK
   createPost(post: Omit<Post, 'id' | 'createdAt'>) {
+    // undefined のフィールドをすべて削除
+    const cleaned = Object.fromEntries(
+      Object.entries(post).filter(([_, v]) => v !== undefined)
+    );
+
     return addDoc(this.postsRef, {
-      ...post,
+      ...cleaned,
       createdAt: Date.now(),
     });
   }

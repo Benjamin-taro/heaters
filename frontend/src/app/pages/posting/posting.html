@@ -1,8 +1,9 @@
-<!-- pages/posting/posting.html -->
+<!-- src/app/pages/posting/posting.html -->
 <div class="posting-container">
   <h2>New Post</h2>
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()" class="posting-form">
+    <!-- 共通: カテゴリー -->
     <div class="field">
       <label for="type">カテゴリー</label>
       <select id="type" formControlName="type">
@@ -12,11 +13,13 @@
       </select>
     </div>
 
+    <!-- 共通: タイトル -->
     <div class="field">
       <label for="title">タイトル</label>
       <input id="title" formControlName="title" placeholder="例：IKEAのテーブル譲ります" />
     </div>
 
+    <!-- 共通: 内容 -->
     <div class="field">
       <label for="body">内容</label>
       <textarea
@@ -27,9 +30,87 @@
       ></textarea>
     </div>
 
+    <!-- 共通: 場所 -->
+    <div class="field">
+    <label for="location">
+        場所
+        <span *ngIf="selectedType === 'event'">（イベント会場）</span>
+    </label>
+    <input
+        id="location"
+        formControlName="location"
+        [placeholder]="selectedType === 'event'
+        ? '例：Glasgow Central / Zoom など'
+        : '例：Glasgow West End / Online など'"
+    />
+    </div>
+
+    <!-- ★ Buy & Sell 専用フィールド -->
+    <ng-container *ngIf="selectedType === 'buy-sell'">
+      <div class="field">
+        <label>買いたい / 売りたい</label>
+        <select formControlName="buySellIntent">
+          <option [ngValue]="null">選択してください</option>
+          <option value="buy">買いたい</option>
+          <option value="sell">売りたい</option>
+        </select>
+      </div>
+
+      <div class="field-inline">
+        <div class="field">
+          <label for="price">価格</label>
+          <input
+            id="price"
+            type="number"
+            formControlName="price"
+            placeholder="例：20"
+          />
+        </div>
+
+        <div class="field">
+          <label for="priceCurrency">通貨</label>
+          <select id="priceCurrency" formControlName="priceCurrency">
+            <option value="GBP">GBP (£)</option>
+            <option value="JPY">JPY (¥)</option>
+          </select>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- ★ Event 専用フィールド -->
+    <ng-container *ngIf="selectedType === 'event'">
+      <div class="field">
+        <label for="eventDate">日付</label>
+        <input id="eventDate" type="date" formControlName="eventDate" />
+      </div>
+
+      <div class="field">
+        <label for="maxParticipants">定員</label>
+        <input
+          id="maxParticipants"
+          type="number"
+          formControlName="maxParticipants"
+          placeholder="例：20"
+        />
+      </div>
+    </ng-container>
+
+    <!-- ★ Article 専用フィールド -->
+    <ng-container *ngIf="selectedType === 'article'">
+      <div class="field">
+        <label for="articleCategory">記事のカテゴリー</label>
+        <input
+          id="articleCategory"
+          formControlName="articleCategory"
+          placeholder="例：レストラン口コミ / 生活情報"
+        />
+      </div>
+    </ng-container>
+
+    <!-- 送信ボタン -->
     <div class="actions">
       <button type="submit" [disabled]="form.invalid || loading || !currentUserId">
-        Post
+        {{ loading ? 'Posting...' : 'Post' }}
       </button>
       <p *ngIf="!currentUserId" class="login-hint">
         ※投稿するにはログインが必要です
