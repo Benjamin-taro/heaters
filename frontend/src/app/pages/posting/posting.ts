@@ -6,6 +6,7 @@ import { PostService, PostType, Post } from '../../core/post';
 import { AuthService } from '../../core/auth';
 import { Firestore, doc, docData } from '@angular/fire/firestore';
 import { firstValueFrom } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-posting-page',
@@ -24,6 +25,7 @@ export class Posting {
     private postService: PostService,
     private authService: AuthService,
     private firestore: Firestore,
+    private router: Router,
   ) {
     this.form = this.fb.group({
       // 共通
@@ -90,7 +92,9 @@ export class Posting {
         articleCategory: v.articleCategory || undefined,
       };
 
-      await this.postService.createPost(payload);
+      const docRef = await this.postService.createPost(payload);
+
+      await this.router.navigate(['/posts', docRef.id]);
 
       // 初期値を再セットしつつリセット
       this.form.reset({
