@@ -1,22 +1,34 @@
 <h1>My Page</h1>
 
 <div *ngIf="auth.user$ | async as user; else loggedOut" class="user-card">
-  <p>Hi, {{ user.displayName || user.email }} 👋</p>
+  <ng-container *ngIf="profile$ | async as profile; else loadingProfile">
+    <p>
+      Hi,
+      <strong>
+        {{ profile?.username || user.displayName || user.email }}
+      </strong>
+      👋
+    </p>
 
-  <ul>
-    <li><strong>UID:</strong> {{ user.uid }}</li>
-    <li><strong>Email:</strong> {{ user.email }}</li>
-  </ul>
+    <ul>
+      <li><strong>Email:</strong> {{ user.email }}</li>
+      <li><strong>ユーザーネーム:</strong> {{ profile?.username }}</li>
+      <li><strong>生年月日:</strong> {{ profile?.birthday | date:'yyyy/MM/dd' }}</li>
+      <li><strong>年齢:</strong> {{ profile?.age }} 歳</li>
+      <li><strong>登録日:</strong>{{ profile?.createdAt?.toDate() | date:'yyyy/MM/dd' }}</li>
+    </ul>
 
-  <div class="action-buttons">
-  <a
-    [routerLink]="['/listing']"
-    [queryParams]="{ mine: true }"
-  >
-    自分の投稿を見る
-  </a>    
-  <a routerLink="/posting">新しい投稿を作る</a>
-  </div>
+    <div class="action-buttons">
+      <a [routerLink]="['/listing']" [queryParams]="{ mine: true }">
+        自分の投稿を見る
+      </a>
+      <a routerLink="/posting">新しい投稿を作る</a>
+    </div>
+  </ng-container>
+
+  <ng-template #loadingProfile>
+    <p>プロフィール読み込み中...</p>
+  </ng-template>
 </div>
 
 <ng-template #loggedOut>

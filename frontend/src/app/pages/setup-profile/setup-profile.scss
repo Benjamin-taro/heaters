@@ -1,0 +1,60 @@
+/* src/app/pages/setup-profile/setup-profile.scss */
+.setup-container {
+  max-width: 480px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  h2 {
+    margin-bottom: 0.5rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.setup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    label {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    // ユーザーネーム & 生年月日（date）用
+    input[type='text'],
+    input[type='date'] {
+      padding: 0.5rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      background: #fafafa;
+
+      &:focus {
+        outline: none;
+        border-color: #3f51b5; // 青系
+        box-shadow: 0 0 3px rgba(63, 81, 181, 0.3);
+      }
+    }
+  }
+
+  .error {
+    font-size: 0.8rem;
+    color: #d32f2f;
+  }
+
+  .error.global {
+    margin-top: 0.5rem;
+  }
+}

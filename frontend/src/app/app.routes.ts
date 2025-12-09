@@ -4,7 +4,8 @@ import { Listings } from './pages/listings/listings';
 import { Posting } from './pages/posting/posting'; 
 import { Login } from './pages/login/login';
 import { MyPage } from './pages/mypage/mypage';  
-import { PostDetail } from './pages/post-detail/post-detail'; 
+import { PostDetail } from './pages/post-detail/post-detail';
+import { SetupProfile } from './pages/setup-profile/setup-profile';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -26,6 +27,9 @@ export const routes: Routes = [
 
   // ログイン
   { path: 'login', component: Login },
+
+  // プロフィール設定（初回ログイン時）
+  { path: 'setup-profile', component: SetupProfile },
 
   // マイページ
   { path: 'mypage', component: MyPage },

@@ -1,10 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { Observable, switchMap, combineLatest } from 'rxjs';
+import { Observable, switchMap, combineLatest, map } from 'rxjs';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { PostService, Post, PostType } from '../../core/post';
 import { AuthService } from '../../core/auth';
 import { PostListComponent } from '../../shared/post-list/post-list';
+
+interface ListingsVm {
+  title: string;
+  posts: Post[];
+}
 
 @Component({
   selector: 'app-listings-page',
@@ -14,30 +19,80 @@ import { PostListComponent } from '../../shared/post-list/post-list';
   styleUrl: './listings.scss',
 })
 export class Listings {
-  posts$!: Observable<Post[]>;
+  vm$!: Observable<ListingsVm>;
 
   constructor(
     private postService: PostService,
     private route: ActivatedRoute,
     private auth: AuthService,
   ) {
-    this.posts$ = combineLatest([
-      this.route.paramMap,       // /listing/type/:type 用
+    this.vm$ = combineLatest([
+      this.route.paramMap,       // /listings/type/:type 用
       this.route.queryParamMap,  // ?mine=true 用
       this.auth.user$,           // ログインユーザー
     ]).pipe(
       switchMap(([params, queryParams, user]) => {
-        const type = params.get('type') as PostType | null;
-        const mine = queryParams.get('mine'); // 'true' or null
+        // ① 生の文字列として受け取る
+        const rawType = params.get('type'); // string | null
 
-        // /listing?mine=true かつ ログイン済み → 自分の投稿だけ
-        if (mine === 'true' && user) {
-          return this.postService.getPostsByUser(user.uid, type ?? undefined);
-        }
+        // ② all フラグ
+        const isAll = rawType === 'all';
 
-        // それ以外 → 全体（type 指定があれば type 絞り込み）
-        return this.postService.getPosts(type ?? undefined);
+        // ③ API 用の type は PostType | null にそろえる
+        const type: PostType | null = isAll
+          ? null
+          : (rawType as PostType | null);
+
+        const mineQuery = queryParams.get('mine') === 'true';
+        const isMine = mineQuery && !!user;
+
+        // 1) タイトル文字列を決める
+        const typeLabel = this.getTypeLabel(type);
+
+        const title = (() => {
+          if (isAll) {
+            // /listings/type/all のとき
+            return isMine ? '自分の全ての投稿一覧' : '全ての投稿一覧';
+          }
+
+          if (isMine) {
+            // 自分の投稿一覧系
+            if (type) {
+              return `自分の ${typeLabel} の投稿一覧`;
+            }
+            return '自分の投稿一覧';
+          } else {
+            // 全体の投稿
+            if (type) {
+              return `${typeLabel} の投稿一覧`;
+            }
+            return '全ての投稿';
+          }
+        })();
+
+        // 2) どの API で投稿を取るか決める
+        const posts$ =
+          isMine && user
+            ? this.postService.getPostsByUser(user.uid, type ?? undefined)
+            : this.postService.getPosts(type ?? undefined);
+
+        // 3) 最終的に { title, posts } を流す
+        return posts$.pipe(map(posts => ({ title, posts })));
       }),
     );
+  }
+
+  private getTypeLabel(type: PostType | null): string {
+    // PostType の定義に合わせて調整してね
+    switch (type) {
+      case 'buy-sell':
+        return 'Buy & Sell';
+      case 'event':
+        return 'イベント';
+      case 'article':
+        return 'イベント記事・コラム';
+      default:
+        return '投稿';
+    }
   }
 }
