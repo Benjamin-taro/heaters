@@ -1,4 +1,9 @@
-<app-post-list
-  [title]="'Listing'"
-  [posts]="posts$ | async"
-/>
+<ng-container *ngIf="vm$ | async as vm; else noPosts">
+  <app-post-list
+    [title]="vm.title"
+    [posts]="vm.posts"
+  />
+</ng-container>
+<ng-template #noPosts>
+  <p>投稿がありません。</p>
+</ng-template>

@@ -1,0 +1,47 @@
+<!-- src/app/pages/setup-profile/setup-profile.html -->
+<div class="setup-container">
+  <h2>プロフィール登録</h2>
+  <p class="subtitle">
+    初回ログインありがとうございます！<br />
+    サービスを使う前に、簡単なプロフィールを教えてください。
+  </p>
+
+  <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="setup-form">
+    <!-- ユーザーネーム -->
+    <div class="field">
+      <label for="username">ユーザーネーム（投稿時に表示されます）</label>
+      <input id="username" type="text" formControlName="username" />
+      <div
+        class="error"
+        *ngIf="profileForm.get('username')?.touched && profileForm.get('username')?.invalid"
+      >
+        ユーザーネームは3〜20文字の英数字・アンダースコアで入力してください。
+      </div>
+    </div>
+
+    <!-- 生年月日 -->
+    <div class="field">
+      <label for="birthday">生年月日</label>
+      <input id="birthday" type="date" formControlName="birthday" />
+      <div
+        class="error"
+        *ngIf="profileForm.get('birthday')?.touched && profileForm.get('birthday')?.invalid"
+      >
+        生年月日を入力してください。
+      </div>
+    </div>
+
+    <!-- エラー表示 -->
+    <p class="error global" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </p>
+
+    <!-- 保存ボタン -->
+    <button
+      pButton
+      type="submit"
+      label="プロフィールを保存"
+      [disabled]="loading"
+    ></button>
+  </form>
+</div>

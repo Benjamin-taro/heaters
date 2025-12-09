@@ -4,6 +4,8 @@ import { Component } from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { PostService, PostType, Post } from '../../core/post';
 import { AuthService } from '../../core/auth';
+import { Firestore, doc, docData } from '@angular/fire/firestore';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-posting-page',
@@ -21,6 +23,7 @@ export class Posting {
     private fb: FormBuilder,
     private postService: PostService,
     private authService: AuthService,
+    private firestore: Firestore,
   ) {
     this.form = this.fb.group({
       // 共通
@@ -60,11 +63,18 @@ export class Posting {
     try {
       const v = this.form.value;
 
+      // 🔹 1) Firestore の users/{uid} から username を取得
+      const userDocRef = doc(this.firestore, 'users', this.currentUserId);
+      const profile: any = await firstValueFrom(docData(userDocRef));
+      const username = profile?.username ?? 'unknown';
+
+      // 🔹 2) Post に userId と username を両方入れる
       const payload: Omit<Post, 'id' | 'createdAt'> = {
         type: v.type as PostType,
         title: v.title!,
         body: v.body!,
         userId: this.currentUserId!,
+        username,                                  // ← 追加ポイント
         location: v.location || undefined,
 
         // Buy & Sell
@@ -72,7 +82,7 @@ export class Posting {
         price: v.price != null ? Number(v.price) : undefined,
         priceCurrency: v.priceCurrency || undefined,
 
-        // Event: date input の string を number に変換して保存
+        // Event
         eventDate: v.eventDate ? new Date(v.eventDate).getTime() : undefined,
         maxParticipants: v.maxParticipants != null ? Number(v.maxParticipants) : undefined,
 
