@@ -3,6 +3,7 @@ import { of } from 'rxjs';
 
 import { MyPage } from './mypage';
 import { AuthService } from '../../core/auth';
+import { Firestore } from '@angular/fire/firestore';  // ★ 追加
 
 describe('MyPage', () => {
   beforeEach(async () => {
@@ -17,6 +18,12 @@ describe('MyPage', () => {
             // もし logout() とか使ってるならダミー関数も足しておく
             logout: jasmine.createSpy('logout'),
           } as Partial<AuthService>,
+        },
+        {
+          // ★ MyPage 本体が inject(Firestore) しているので、
+          //    とりあえず「存在だけするダミー Firestore」を登録する
+          provide: Firestore,
+          useValue: {} as Firestore,
         },
       ],
     }).compileComponents();

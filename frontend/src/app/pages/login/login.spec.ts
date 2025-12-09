@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Auth } from '@angular/fire/auth';
+import { of } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
+
 import { Login } from './login';
+import { AuthService } from '../../core/auth';
 
 describe('Login', () => {
   let component: Login;
@@ -8,17 +11,23 @@ describe('Login', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Login],
+      imports: [
+        Login,
+        RouterTestingModule,  // routerLink とか使ってたらこれが必要
+      ],
       providers: [
         {
-          provide: Auth,
-          useValue: {} as Auth,
+          provide: AuthService,
+          useValue: {
+            user$: of(null),                          // Login で使ってるとしたらこれ
+            loginWithGoogle: jasmine.createSpy('loginWithGoogle'),
+            logout: jasmine.createSpy('logout'),
+          } as Partial<AuthService>,
         },
       ],
-    })
-    .compileComponents();
+    }).compileComponents();
 
-    const fixture = TestBed.createComponent(Login);
+    fixture = TestBed.createComponent(Login);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
