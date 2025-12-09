@@ -2,7 +2,9 @@
   <h1>HEATERs</h1>
   <nav>
     <a routerLink="/home">Home</a>
-    <a routerLink="/listing">All posts</a>
+    <a [routerLink]="['/listing']"
+      [queryParams]="{}"
+      queryParamsHandling="">All posts</a>
     <a routerLink="/listing/type/buy-sell">Buy & Sell</a>
     <a routerLink="/listing/type/event">Event</a>
     <a routerLink="/listing/type/article">Article</a>
