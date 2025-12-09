@@ -5,7 +5,11 @@ import { of } from 'rxjs';
 import { Posting } from './posting';
 import { PostService } from '../../core/post';
 import { AuthService } from '../../core/auth';
-import { DocumentReference, DocumentData } from '@angular/fire/firestore';
+import {
+  DocumentReference,
+  DocumentData,
+  Firestore,               // ★ 追加
+} from '@angular/fire/firestore';
 
 describe('Posting', () => {
   let postServiceMock: jasmine.SpyObj<PostService>;
@@ -17,7 +21,9 @@ describe('Posting', () => {
     // createPost が Promise を返すのであればこうしておく
     postServiceMock.createPost.and.returnValue(
       Promise.resolve({} as DocumentReference<DocumentData, DocumentData>)
+      // めんどかったら Promise.resolve({} as any) でもOK
     );
+
     await TestBed.configureTestingModule({
       imports: [
         Posting,           // standalone component
@@ -32,6 +38,11 @@ describe('Posting', () => {
             // コンストラクタ内で subscribe してるので、最低限これがあれば十分
             user$: of(null),
           } as Partial<AuthService>,
+        },
+        {
+          // ★ Firestore を「とりあえず存在するだけのダミー」として登録
+          provide: Firestore,
+          useValue: {} as Firestore,
         },
       ],
     }).compileComponents();

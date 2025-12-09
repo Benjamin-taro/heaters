@@ -24,6 +24,7 @@ export interface Post {
   body: string;
   createdAt: number;
   userId: string;
+  username: string;
   type: PostType;
   location?: string;   // ★ 共通の場所
 
