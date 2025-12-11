@@ -13,7 +13,13 @@
   <!-- 未ログイン -->
   <ng-template #loggedOut>
     <div class="auth-card">
-      <button type="button" class="google-btn" (click)="loginWithGoogle()">
+
+      <!-- ① Google Login（クリックした瞬間に実行する） -->
+      <button
+        type="button"
+        class="google-btn"
+        (click)="loginWithGoogle()"
+      >
         Login with Google
       </button>
 
@@ -21,7 +27,9 @@
         <span>or</span>
       </div>
 
-      <form (ngSubmit)="loginEmail()" class="auth-form">
+      <!-- ② Email + Password → CAPTCHA → 実行 -->
+      <form (ngSubmit)="requestEmailLogin()" class="auth-form">
+
         <div class="field">
           <label for="email">Email</label>
           <input
@@ -44,10 +52,26 @@
           />
         </div>
 
+        <!-- reCAPTCHA -->
+        <re-captcha
+          [siteKey]="siteKey"
+          (resolved)="onCaptchaResolved($event)">
+        </re-captcha>
+
         <div class="actions">
-          <button type="submit">Login with Email</button>
-          <button type="button" class="link-btn" (click)="registerEmail()">Sign up</button>
+          <button type="submit">
+            Login with Email
+          </button>
+
+          <button
+            type="button"
+            class="link-btn"
+            (click)="requestEmailRegister()"
+          >
+            Sign up
+          </button>
         </div>
+
       </form>
     </div>
   </ng-template>
