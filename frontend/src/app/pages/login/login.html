@@ -53,10 +53,11 @@
         </div>
 
         <!-- reCAPTCHA -->
-        <re-captcha
+        <!-- <re-captcha
           [siteKey]="siteKey"
           (resolved)="onCaptchaResolved($event)">
-        </re-captcha>
+        </re-captcha> -->
+        <div #captchaContainer></div>
 
         <div class="actions">
           <button type="submit">

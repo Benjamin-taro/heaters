@@ -29,7 +29,6 @@
     "@angular/router": "^20.3.14",
     "@primeuix/themes": "^2.0.0",
     "firebase": "^11.10.0",
-    "ng-recaptcha": "^13.2.1",
     "primeng": "^20.3.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

@@ -1,23 +1,25 @@
 // src/app/pages/login/login.ts
-import { Component, inject } from '@angular/core';
+import { Component, inject, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { AuthService } from '../../core/auth';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
-import { RecaptchaModule } from 'ng-recaptcha';
 
 type PendingAction = 'email-login' | 'email-register' | null;
+
+// ★ reCAPTCHA グローバル宣言
+declare const grecaptcha: any;
 
 @Component({
   selector: 'app-login-page',
   standalone: true,
-  imports: [AsyncPipe, NgIf, FormsModule, ButtonModule, RecaptchaModule],
+  imports: [AsyncPipe, NgIf, FormsModule, ButtonModule],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
-export class Login {
+export class Login implements AfterViewInit {
   auth = inject(AuthService);
   private router = inject(Router);
 
@@ -27,6 +29,25 @@ export class Login {
   siteKey = environment.recaptchaSiteKey;
   captchaToken: string | null = null;
   pendingAction: PendingAction = null;
+
+  // ★ reCAPTCHA の DOM 参照
+  @ViewChild('captchaContainer') captchaContainer!: ElementRef;
+  private widgetId: number | null = null;
+
+  // -------------------------------------------------
+  // ★ ページ描画後に reCAPTCHA をレンダリング
+  // -------------------------------------------------
+  ngAfterViewInit() {
+    grecaptcha.ready(() => {
+      this.widgetId = grecaptcha.render(
+        this.captchaContainer.nativeElement,
+        {
+          sitekey: this.siteKey,
+          callback: (token: string) => this.onCaptchaResolved(token)
+        }
+      );
+    });
+  }
 
   // reCAPTCHA 成功時に呼ばれる
   async onCaptchaResolved(token: string | null) {
@@ -51,7 +72,6 @@ export class Login {
     return !!this.captchaToken;
   }
 
-  // --- Google ログインはクリック直後に実行しないと動かない ---
   async loginWithGoogle() {
     try {
       const result = await this.auth.loginWithGoogle();
@@ -66,7 +86,6 @@ export class Login {
     }
   }
 
-  // --- Email login / register は CAPTCHA 経由 ---
   requestEmailLogin() {
     if (this.isCaptchaValid) {
       this.doEmailLogin();
