@@ -1,11 +1,16 @@
 <header class="site-header">
-  <h1>HEATERs</h1>
+  <div class="header-top">
+    <div class="logo">
+      <img src="assets/heaters_logo_temp.png" alt="HEATERs logo" />
+    </div>
 
-  <nav>
+    <!-- 右上に何かテキストやリンク置きたければここ -->
+    <div class="header-right">スコットランド在住日本人のためのコミュニティーWebサイト</div>
+  </div>
+
+  <nav class="main-nav">
     <a routerLink="/home">Home</a>
-    <a [routerLink]="['/listing']"
-      [queryParams]="{}"
-      queryParamsHandling="">All posts</a>
+    <a [routerLink]="['/listing']" [queryParams]="{}">All posts</a>
     <a routerLink="/listing/type/buy-sell">Buy & Sell</a>
     <a routerLink="/listing/type/event">Event</a>
     <a routerLink="/listing/type/article">Article</a>
@@ -15,6 +20,12 @@
   </nav>
 </header>
 
+
 <main class="page-container">
   <router-outlet></router-outlet>
 </main>
+
+<footer class="site-footer">
+  <p>&copy; 2025 HEATERs</p>
+</footer>
+
