@@ -10,6 +10,12 @@ describe('Login', () => {
   let fixture: ComponentFixture<Login>;
 
   beforeEach(async () => {
+    // ★ テスト用にダミー grecaptcha を生やす
+    (window as any).grecaptcha = {
+      ready: (cb: Function) => cb(),
+      render: jasmine.createSpy('render').and.returnValue(1),
+    };
+
     await TestBed.configureTestingModule({
       imports: [
         Login,
