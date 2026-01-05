@@ -1,6 +1,6 @@
 // src/app/pages/login/login.ts
 import { Component, inject, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
-import { AuthService } from '../../core/auth';
+import { AuthSupabase } from '../../core/auth/auth-supabase';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -20,7 +20,7 @@ declare const grecaptcha: any;
   styleUrl: './login.scss',
 })
 export class Login implements AfterViewInit {
-  auth = inject(AuthService);
+  auth = inject(AuthSupabase);
   private router = inject(Router);
 
   email = '';
@@ -72,19 +72,19 @@ export class Login implements AfterViewInit {
     return !!this.captchaToken;
   }
 
-  async loginWithGoogle() {
-    try {
-      const result = await this.auth.loginWithGoogle();
+  // async loginWithGoogle() {
+  //   try {
+  //     const result = await this.auth.loginWithGoogle();
 
-      if (result.isFirstLogin) {
-        this.router.navigate(['/setup-profile'], { state: { uid: result.user.uid } });
-      } else {
-        this.router.navigate(['/']);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  }
+  //     if (result.isFirstLogin) {
+  //       this.router.navigate(['/setup-profile'], { state: { uid: result.user.uid } });
+  //     } else {
+  //       this.router.navigate(['/']);
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // }
 
   requestEmailLogin() {
     if (this.isCaptchaValid) {
@@ -104,7 +104,7 @@ export class Login implements AfterViewInit {
 
   private async doEmailLogin() {
     try {
-      await this.auth.loginWithEmail(this.email, this.password);
+      await this.auth.signIn(this.email, this.password);
       this.router.navigate(['/']);
     } catch (err) {
       console.error(err);
@@ -113,14 +113,15 @@ export class Login implements AfterViewInit {
 
   private async doEmailRegister() {
     try {
-      await this.auth.registerWithEmail(this.email, this.password);
-      this.router.navigate(['/setup-profile']);
+      await this.auth.signUp(this.email, this.password);
+      this.router.navigate(['/']); // or /setup-profile
     } catch (err) {
       console.error(err);
     }
   }
 
+
   logout() {
-    this.auth.logout().catch(console.error);
+    this.auth.signOut().catch(console.error);
   }
 }

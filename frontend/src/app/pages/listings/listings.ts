@@ -5,6 +5,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { PostService, Post, PostType } from '../../core/post';
 import { AuthService } from '../../core/auth';
 import { PostListComponent } from '../../shared/post-list/post-list';
+import { PostSupabase } from '../../core/post/post-supabase';
 
 interface ListingsVm {
   title: string;
@@ -25,6 +26,7 @@ export class Listings {
     private postService: PostService,
     private route: ActivatedRoute,
     private auth: AuthService,
+    private postSupabase: PostSupabase,
   ) {
     this.vm$ = combineLatest([
       this.route.paramMap,       // /listings/type/:type 用
@@ -73,8 +75,8 @@ export class Listings {
         // 2) どの API で投稿を取るか決める
         const posts$ =
           isMine && user
-            ? this.postService.getPostsByUser(user.uid, type ?? undefined)
-            : this.postService.getPosts(type ?? undefined);
+            ? this.postService.getPostsByUser(user.uid, type ?? undefined) // ここは一旦Firestoreのまま
+            : this.postSupabase.getPosts(type ?? undefined);              // ここをSupabaseに
 
         // 3) 最終的に { title, posts } を流す
         return posts$.pipe(map(posts => ({ title, posts })));
