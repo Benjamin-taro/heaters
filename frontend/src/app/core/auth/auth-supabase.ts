@@ -14,11 +14,15 @@ export class AuthSupabase {
   user$: Observable<AppUser | null> = this.userSubject.asObservable();
 
   constructor() {
+    console.log('[AuthSupabase] constructor');
+
     // 初期セッションを復元
     this.init();
 
     // セッション変化を購読（ログイン/ログアウト/トークン更新）
-    supabase.auth.onAuthStateChange((_event, session) => {
+    supabase.auth.onAuthStateChange((event, session) => {
+      console.log('[AuthSupabase] state change:', event, session?.user?.id);
+
       const u = session?.user;
       this.userSubject.next(
         u ? { uid: u.id, email: u.email ?? null } : null
