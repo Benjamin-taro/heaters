@@ -42,10 +42,17 @@ export class AuthSupabase {
   }
 
   async signUp(email: string, password: string) {
-    const { data, error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: 'http://localhost:4200/auth/callback',
+      },
+    });
     if (error) throw error;
     return data; // data.user / data.session
   }
+
 
   async signIn(email: string, password: string) {
     const { data, error } = await supabase.auth.signInWithPassword({
