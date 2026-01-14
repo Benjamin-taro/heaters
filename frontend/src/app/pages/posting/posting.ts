@@ -7,6 +7,7 @@ import { AuthService } from '../../core/auth';
 import { Firestore, doc, docData } from '@angular/fire/firestore';
 import { firstValueFrom } from 'rxjs';
 import { supabase } from '../../core/supabase/supabase.client';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-posting-page',
