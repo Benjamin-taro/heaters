@@ -5,7 +5,7 @@
     <p>
       Hi,
       <strong>
-        {{ profile?.username || user.displayName || user.email }}
+        {{ profile?.username || user.email }}
       </strong>
       👋
     </p>
@@ -15,7 +15,7 @@
       <li><strong>ユーザーネーム:</strong> {{ profile?.username }}</li>
       <li><strong>生年月日:</strong> {{ profile?.birthday | date:'yyyy/MM/dd' }}</li>
       <li><strong>年齢:</strong> {{ profile?.age }} 歳</li>
-      <li><strong>登録日:</strong>{{ profile?.createdAt?.toDate() | date:'yyyy/MM/dd' }}</li>
+      <li><strong>登録日:</strong>{{ profile?.created_at | date:'yyyy/MM/dd' }}</li>
     </ul>
 
     <div class="action-buttons">

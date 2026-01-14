@@ -58,6 +58,10 @@
     <p class="body">
       {{ post.body }}
     </p>
+    <p class="meta">
+      投稿者: {{ post.username }}<br />
+      投稿日: {{ post.createdAt | date: 'yyyy/MM/dd HH:mm' }}
+    </p>
   </article>
 
   <a routerLink="/listing" class="back-link">← 投稿一覧に戻る</a>
