@@ -25,6 +25,7 @@ export class Posting {
     private postService: PostService,
     private authService: AuthService,
     private firestore: Firestore,
+    private router: Router,
   ) {
     this.form = this.fb.group({
       // 共通

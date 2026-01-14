@@ -13,6 +13,7 @@ import {
   limit
 } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
+import { DocumentReference, DocumentData } from '@angular/fire/firestore';
 
 export type PostType = 'buy-sell' | 'event' | 'article';
 
@@ -109,7 +110,7 @@ export class PostService {
   }
 
   // ここは「id と createdAt 以外」を受け取る形のままでOK
-  createPost(post: Omit<Post, 'id' | 'createdAt'>) {
+  createPost(post: Omit<Post, 'id' | 'createdAt'>): Promise<DocumentReference<DocumentData>> {
     // undefined のフィールドをすべて削除
     const cleaned = Object.fromEntries(
       Object.entries(post).filter(([_, v]) => v !== undefined)
