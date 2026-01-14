@@ -2,8 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Observable } from 'rxjs';
-import { PostService, Post } from '../../core/post';
 import { PostListComponent } from '../../shared/post-list/post-list';
+import { PostSupabase } from '../../core/post/post-supabase';
+import { PostService, Post } from '../../core/post';
 
 @Component({
   selector: 'app-home-page',
@@ -15,7 +16,7 @@ import { PostListComponent } from '../../shared/post-list/post-list';
 export class Home {
   latestPosts$!: Observable<Post[]>;
 
-  constructor(private postService: PostService) {
-    this.latestPosts$ = this.postService.getPostLatests(5);
+  constructor(private postSupabase: PostSupabase) {
+    this.latestPosts$ = this.postSupabase.getPosts(undefined, 5);
   }
 }

@@ -46,11 +46,11 @@ export class AuthSupabase {
       email,
       password,
       options: {
-        emailRedirectTo: 'http://localhost:4200/auth/callback',
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
       },
     });
     if (error) throw error;
-    return data; // data.user / data.session
+    return data;
   }
 
 
