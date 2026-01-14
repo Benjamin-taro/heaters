@@ -1,16 +1,11 @@
 // src/app/pages/login/login.ts
-import { Component, inject, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
-import { AuthService } from '../../core/auth';
+import { Component, inject } from '@angular/core';
+import { AuthSupabase } from '../../core/auth/auth-supabase';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { Router } from '@angular/router';
-import { environment } from '../../../environments/environment';
-
-type PendingAction = 'email-login' | 'email-register' | null;
-
-// ★ reCAPTCHA グローバル宣言
-declare const grecaptcha: any;
+import { supabase } from '../../core/supabase/supabase.client';
 
 @Component({
   selector: 'app-login-page',
@@ -19,108 +14,48 @@ declare const grecaptcha: any;
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
-export class Login implements AfterViewInit {
-  auth = inject(AuthService);
+export class Login {
+  auth = inject(AuthSupabase);
   private router = inject(Router);
 
   email = '';
   password = '';
 
-  siteKey = environment.recaptchaSiteKey;
-  captchaToken: string | null = null;
-  pendingAction: PendingAction = null;
+  async requestEmailLogin() {
+    const { user } = await this.auth.signIn(this.email, this.password);
+    if (!user) return;
 
-  // ★ reCAPTCHA の DOM 参照
-  @ViewChild('captchaContainer') captchaContainer!: ElementRef;
-  private widgetId: number | null = null;
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('id', user.id)
+      .maybeSingle();
 
-  // -------------------------------------------------
-  // ★ ページ描画後に reCAPTCHA をレンダリング
-  // -------------------------------------------------
-  ngAfterViewInit() {
-    grecaptcha.ready(() => {
-      this.widgetId = grecaptcha.render(
-        this.captchaContainer.nativeElement,
-        {
-          sitekey: this.siteKey,
-          callback: (token: string) => this.onCaptchaResolved(token)
-        }
-      );
-    });
-  }
-
-  // reCAPTCHA 成功時に呼ばれる
-  async onCaptchaResolved(token: string | null) {
-    this.captchaToken = token;
-
-    if (!token || !this.pendingAction) return;
-
-    switch (this.pendingAction) {
-      case 'email-login':
-        await this.doEmailLogin();
-        break;
-
-      case 'email-register':
-        await this.doEmailRegister();
-        break;
-    }
-
-    this.pendingAction = null;
-  }
-
-  get isCaptchaValid() {
-    return !!this.captchaToken;
-  }
-
-  async loginWithGoogle() {
-    try {
-      const result = await this.auth.loginWithGoogle();
-
-      if (result.isFirstLogin) {
-        this.router.navigate(['/setup-profile'], { state: { uid: result.user.uid } });
-      } else {
-        this.router.navigate(['/']);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  requestEmailLogin() {
-    if (this.isCaptchaValid) {
-      this.doEmailLogin();
-    } else {
-      this.pendingAction = 'email-login';
-    }
-  }
-
-  requestEmailRegister() {
-    if (this.isCaptchaValid) {
-      this.doEmailRegister();
-    } else {
-      this.pendingAction = 'email-register';
-    }
-  }
-
-  private async doEmailLogin() {
-    try {
-      await this.auth.loginWithEmail(this.email, this.password);
-      this.router.navigate(['/']);
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  private async doEmailRegister() {
-    try {
-      await this.auth.registerWithEmail(this.email, this.password);
+    if (!profile) {
       this.router.navigate(['/setup-profile']);
+    } else {
+      this.router.navigate(['/']);
+    }
+  }
+
+
+  async requestEmailRegister() {
+    try {
+      await this.auth.signUp(this.email, this.password);
+
+      // ❌ login しない
+      // ❌ setup-profile にも行かない
+
+      // ✅ 確認メール案内ページへ
+      this.router.navigate(['/check-email']);
     } catch (err) {
       console.error(err);
     }
   }
+
+
 
   logout() {
-    this.auth.logout().catch(console.error);
+    this.auth.signOut().catch(console.error);
   }
 }

@@ -1,18 +1,11 @@
-// src/app/pages/setup-profile/setup-profile.ts
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 
-import {
-  Firestore,
-  doc,
-  runTransaction,
-  serverTimestamp,
-} from '@angular/fire/firestore';
-import { AuthService } from '../../core/auth';
-import { take } from 'rxjs/operators';
+import { AuthSupabase } from '../../core/auth/auth-supabase';
+import { supabase } from '../../core/supabase/supabase.client';
 
 @Component({
   selector: 'app-setup-profile',
@@ -21,19 +14,15 @@ import { take } from 'rxjs/operators';
   templateUrl: './setup-profile.html',
   styleUrl: './setup-profile.scss',
 })
-export class SetupProfile implements OnInit {
-  private router = inject(Router);
-  private firestore = inject(Firestore);
+export class SetupProfile {
   private fb = inject(FormBuilder);
-  private auth = inject(AuthService);
+  private router = inject(Router);
+  private auth = inject(AuthSupabase);
 
-  uid: string | null = null;
   loading = false;
   errorMessage = '';
 
-  // 🔹 プロフィール入力フォーム
   profileForm = this.fb.group({
-    // 英数字 + アンダースコア 3〜20文字くらいを想定
     username: [
       '',
       [
@@ -43,38 +32,11 @@ export class SetupProfile implements OnInit {
         Validators.pattern(/^[a-zA-Z0-9_]+$/),
       ],
     ],
-    // HTML 側では <input type="date" formControlName="birthday"> を想定
-    birthday: ['', [Validators.required]],
+    birthday: ['', Validators.required],
   });
 
-  ngOnInit() {
-    // ① login.ts からの navigation state 経由で uid を受け取る
-    const nav = this.router.getCurrentNavigation();
-    const fromState = nav?.extras.state as { uid?: string } | undefined;
-    if (fromState?.uid) {
-      this.uid = fromState.uid;
-    }
-
-    // ② リロードされた場合など、state が消えていたら auth.user$ から拾う
-    if (!this.uid) {
-      this.auth.user$.pipe(take(1)).subscribe((user) => {
-        if (user) {
-          this.uid = user.uid;
-        } else {
-          // そもそもログインしてなければ login に戻す
-          this.router.navigate(['/login']);
-        }
-      });
-    }
-  }
-
   async saveProfile() {
-    if (!this.uid) {
-      this.errorMessage =
-        'ユーザー情報を取得できませんでした。もう一度ログインしてください。';
-      return;
-    }
-
+    console.log('[SetupProfile] saveProfile called');
     if (this.profileForm.invalid) {
       this.profileForm.markAllAsTouched();
       return;
@@ -83,57 +45,44 @@ export class SetupProfile implements OnInit {
     this.loading = true;
     this.errorMessage = '';
 
-    const raw = this.profileForm.value;
-    const usernameRaw = (raw.username ?? '').toString().trim();
-    const birthday = raw.birthday as string; // 'YYYY-MM-DD' を想定
-
-    if (!usernameRaw || !birthday) {
-      this.errorMessage = '入力内容を確認してください。';
-      this.loading = false;
-      return;
-    }
-
-    // 👇 大文字・小文字の違いで被るのを防ぐため、保存用は小文字にそろえる例
-    const usernameKey = usernameRaw.toLowerCase();
-
     try {
-      const usernamesRef = doc(this.firestore, 'usernames', usernameKey);
-      const userRef = doc(this.firestore, 'users', this.uid);
+      const { data: { user } } = await supabase.auth.getUser();
+      const uid = user?.id;
 
-      await runTransaction(this.firestore, async (tx) => {
-        const usernameSnap = await tx.get(usernamesRef);
+      console.log('[SetupProfile] current uid:', uid);
+      if (!uid) {
+        this.router.navigate(['/login']);
+        return;
+      }
 
-        if (usernameSnap.exists()) {
-          // すでにそのユーザーネームが使われている
-          throw new Error('USERNAME_TAKEN');
-        }
+      const { username, birthday } = this.profileForm.value;
+      const usernameKey = username!.trim().toLowerCase();
 
-        // ① usernames コレクションで「この名前はこの uid が使ってる」と予約
-        tx.set(usernamesRef, {
-          uid: this.uid,
-          createdAt: serverTimestamp(),
-        });
-
-        // ② users/{uid} にプロフィールを保存
-        tx.set(userRef, {
-          username: usernameRaw,   // 表示用は元の大文字・小文字を維持してもOK
-          usernameKey,             // 検索・重複判定用
-          birthday,                // 'YYYY-MM-DD'
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        });
+      const { error } = await supabase.from('profiles').insert({
+        id: uid,
+        username: username!.trim(),
+        username_key: usernameKey,
+        birthday,
       });
 
-      // 保存できたらホーム or listings へ
-      this.router.navigate(['/']);
-    } catch (err: any) {
-      console.error(err);
-      if (err instanceof Error && err.message === 'USERNAME_TAKEN') {
-        this.errorMessage = 'このユーザーネームは既に使われています。別の名前を試してください。';
-      } else {
-        this.errorMessage =
-          'プロフィールの保存に失敗しました。時間をおいてもう一度お試しください。';
+      console.log('[SetupProfile] insert error:', error);
+
+      if (error) {
+        // UNIQUE 制約エラー
+        if (error.code === '23505') {
+          this.errorMessage =
+            'このユーザーネームは既に使われています。';
+        } else {
+          throw error;
+        }
+        return;
       }
+
+      this.router.navigate(['/']);
+    } catch (e) {
+      console.error(e);
+      this.errorMessage =
+        'プロフィールの保存に失敗しました。時間をおいて再試行してください。';
     } finally {
       this.loading = false;
     }

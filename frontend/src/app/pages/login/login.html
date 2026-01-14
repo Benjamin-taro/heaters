@@ -5,7 +5,8 @@
   <!-- ログイン中 -->
   <div *ngIf="auth.user$ | async as user; else loggedOut" class="auth-card logged-in">
     <p class="greeting">
-      Hi, <strong>{{ user.displayName || user.email }}</strong>
+      <!-- Hi, <strong>{{ user.displayName || user.email }}</strong> -->
+       Hi!
     </p>
     <button type="button" (click)="logout()">Logout</button>
   </div>
@@ -14,7 +15,7 @@
   <ng-template #loggedOut>
     <div class="auth-card">
 
-      <!-- ① Google Login（クリックした瞬間に実行する） -->
+      <!-- ① Google Login（クリックした瞬間に実行する）
       <button
         type="button"
         class="google-btn"
@@ -25,7 +26,7 @@
 
       <div class="divider">
         <span>or</span>
-      </div>
+      </div> -->
 
       <!-- ② Email + Password → CAPTCHA → 実行 -->
       <form (ngSubmit)="requestEmailLogin()" class="auth-form">
@@ -57,7 +58,7 @@
           [siteKey]="siteKey"
           (resolved)="onCaptchaResolved($event)">
         </re-captcha> -->
-        <div #captchaContainer></div>
+        <!-- <div #captchaContainer></div> -->
 
         <div class="actions">
           <button type="submit">

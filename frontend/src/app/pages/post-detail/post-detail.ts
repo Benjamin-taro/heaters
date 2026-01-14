@@ -5,7 +5,8 @@ import { switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { PostDetailView } from '../../shared/post-detail-view/post-detail-view';
 
-import { PostService, Post } from '../../core/post';
+import { Post } from '../../core/post';
+import { PostSupabase } from '../../core/post/post-supabase';
 
 @Component({
   selector: 'app-post-detail',
@@ -16,15 +17,13 @@ import { PostService, Post } from '../../core/post';
 })
 export class PostDetail {
   private route = inject(ActivatedRoute);
-  private postService = inject(PostService);
+  private postSupabase = inject(PostSupabase);
 
   post$: Observable<Post | undefined> = this.route.paramMap.pipe(
     switchMap((params) => {
       const id = params.get('id');
-      if (!id) {
-        throw new Error('Post id is missing');
-      }
-      return this.postService.getPost(id);
+      if (!id) throw new Error('Post id is missing');
+      return this.postSupabase.getPost(id);
     })
   );
 }

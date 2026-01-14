@@ -6,6 +6,8 @@ import { Login } from './pages/login/login';
 import { MyPage } from './pages/mypage/mypage';  
 import { PostDetail } from './pages/post-detail/post-detail';
 import { SetupProfile } from './pages/setup-profile/setup-profile';
+import { AuthCallback } from './pages/auth-callback/auth-callback';
+import { CheckEmail } from './pages/check-email/check-email';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -33,6 +35,12 @@ export const routes: Routes = [
 
   // マイページ
   { path: 'mypage', component: MyPage },
+
+  // OAuth コールバック
+  { path: 'auth/callback', component: AuthCallback },
+
+  // メール確認案内
+  { path: 'check-email', component: CheckEmail },
 
   // 404
   { path: '**', redirectTo: 'home' },
