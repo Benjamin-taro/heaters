@@ -13,9 +13,16 @@
     padding: 1rem;
     border-radius: 6px;
     border: 1px dashed #ccc;
-    background: #fafafa;
+    background: #ffffff;
     color: #777;
     font-size: 0.9rem;
+    
+    /* ダークモードでも背景を白に固定 */
+    @media (prefers-color-scheme: dark) {
+      background: #ffffff !important;
+      border-color: #ccc !important;
+      color: #777777 !important;
+    }
   }
 
   .loading {

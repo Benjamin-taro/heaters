@@ -10,11 +10,18 @@
   }
 
   .auth-card {
-    background: #fafafa;
+    background: #ffffff;
     border-radius: 8px;
     border: 1px solid #eee;
     padding: 1.5rem;
     text-align: left;
+    
+    /* ダークモードでも背景を白に固定 */
+    @media (prefers-color-scheme: dark) {
+      background: #ffffff !important;
+      border-color: #eee !important;
+      color: #333333 !important;
+    }
   }
 
   .logged-in {
@@ -37,6 +44,14 @@
     cursor: pointer;
     margin-bottom: 1rem;
     transition: background 0.15s, box-shadow 0.15s;
+    color: #333333;
+
+    /* ダークモードでも背景を白に固定 */
+    @media (prefers-color-scheme: dark) {
+      background: #ffffff !important;
+      border-color: #ccc !important;
+      color: #333333 !important;
+    }
 
     &:hover {
       background: #f5f5ff;
@@ -88,6 +103,15 @@
         font-family: inherit;
         outline: none;
         transition: border-color 0.15s, box-shadow 0.15s;
+        background: #fff;
+        color: #333333;
+
+        /* ダークモードでも背景を白に固定 */
+        @media (prefers-color-scheme: dark) {
+          background: #ffffff !important;
+          border-color: #ccc !important;
+          color: #333333 !important;
+        }
 
         &:focus {
           border-color: #4a4a8a;

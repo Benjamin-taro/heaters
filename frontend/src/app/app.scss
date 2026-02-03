@@ -1,54 +1,126 @@
-// ロゴと同じっぽい白に近い色（あとで微調整してOK）
+// ロゴと同じ白背景
 :root {
-  --header-bg: #f7f4f0; // ここを変えればヘッダーの白を微調整できる
+  --header-bg: #ffffff; // 白背景
+}
+
+/* ダークモードでも背景を白に固定 */
+@media (prefers-color-scheme: dark) {
+  .page-container,
+  .site-footer {
+    background-color: #ffffff !important;
+    color: #333333 !important;
+  }
 }
 
 .site-header {
-  background-color: #f7f4f0; // ← ここを直接指定
-  border-bottom: 1px solid #ddd;
+  background-color: #ffffff; // ヘッダー全体は白
   margin-bottom: 1.5rem;
 
-  // 上段：ロゴエリア
+  // 上段：ここだけ背景画像を出す
   .header-top {
+    position: relative;
+
+    background-image: url('/assets/header_background.png');
+    background-size: cover;
+    background-position: 50% 32%;
+    background-repeat: no-repeat;
+
+    // 白オーバーレイ
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.62);
+      z-index: 0;
+    }
+
+    // 中身を前面へ
+    > * {
+      position: relative;
+      z-index: 1;
+    }
+
     max-width: 1100px;
     margin: 0 auto;
     padding: 0.75rem 1rem;
-    display: flex;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
     align-items: center;
-    justify-content: flex-start;
+    gap: 1rem;
+  }
+
+  .header-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.3rem;
+    color: #666;
+    text-align: center;
+
+    .header-description {
+      // display: inline-block;
+      // padding: 0.35rem 0.75rem;
+      // background: rgba(255, 255, 255, 0.9); // 半透明白
+      // border-radius: 6px;
+    
+      font-weight: 600;
+      color: #241616;
+      line-height: 1.4;
+    }
+    
   }
 
   .header-right {
-    margin-left: auto;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
     font-size: 0.9rem;
-    padding: 0.75rem 1rem;
-    margin: 0;
-    color: #666;
+
+    .about-link {
+      color: #29538a;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s ease;
+      white-space: nowrap;
+
+      &:hover {
+        color: #1b3c6a;
+        text-decoration: underline;
+      }
+    }
   }
 
   .logo {
     img {
-      height: 100px;   // ← ロゴの高さ（好みに合わせて 32〜48px あたりで調整）
-      width: 200x;
+      height: 100px;
+      width: 200px;
       display: block;
     }
   }
 
-  // 下段：ナビゲーション
+  // 下段：ナビ（ここは背景なし）
   .main-nav {
+    background-color: #ffffff; // 念のため白固定
     max-width: 1100px;
     margin: 0 auto;
     padding: 0.7rem 1rem;
-    border-top: 1px solid #e5e5e5;
+
+    border-top: none; // ✅ 水平線を消す（これが「線」）
+    // border-top: 1px solid #e5e5e5; ← これを消す
 
     display: flex;
     flex-wrap: wrap;
-    justify-content: center; // MixB ぽく中央寄せ
-    gap: 2.5rem;             // メニューの間隔
+    justify-content: center;
+    gap: 2.5rem;
+
+    @media (max-width: 767px) {
+      justify-content: flex-start;
+      gap: 1.4rem;
+    }
 
     a {
       text-decoration: none;
-      color: #29538a;        // MixBっぽい青
+      color: #29538a;
       font-weight: 500;
       font-size: 0.95rem;
       padding: 0.2rem 0;
@@ -73,19 +145,66 @@
     }
   }
 }
+
 .page-container {
-  background-color: #f7f4f0; // ヘッダーと同じ色
+  background-color: #ffffff; // 白背景
   max-width: 1100px;
   margin: 0 auto;
   padding: 1rem;
+  
+  /* ダークモードでも背景を白に固定 */
+  @media (prefers-color-scheme: dark) {
+    background-color: #ffffff !important;
+    color: #333333 !important;
+  }
 }
 
 .site-footer {
-  background-color: #f7f4f0; // ヘッダーと同じ色
+  background-color: #ffffff; // 白背景
   border-top: 1px solid #ddd;
   margin-top: 1.5rem;
   padding: 1rem 0;
   text-align: center;
   color: #666;
   font-size: 0.9rem;
+  
+  /* ダークモードでも背景を白に固定 */
+  @media (prefers-color-scheme: dark) {
+    background-color: #ffffff !important;
+    color: #666666 !important;
+  }
+
+  .footer-content {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .footer-links {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    a {
+      color: #666;
+      text-decoration: none;
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: #29538a;
+        text-decoration: underline;
+      }
+    }
+
+    .separator {
+      color: #ccc;
+      margin: 0 0.25rem;
+    }
+  }
 }

@@ -14,6 +14,13 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   border: 1px solid #eee;
   animation: fadeIn 0.4s ease;
+  
+  /* ダークモードでも背景を白に固定 */
+  @media (prefers-color-scheme: dark) {
+    background: #ffffff !important;
+    border-color: #eee !important;
+    color: #333333 !important;
+  }
 }
 
 .post-detail h1 {

@@ -10,13 +10,20 @@
   }
 
   .posting-form {
-    background: #fafafa;
+    background: #ffffff;
     border-radius: 8px;
     border: 1px solid #eee;
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    
+    /* ダークモードでも背景を白に固定 */
+    @media (prefers-color-scheme: dark) {
+      background: #ffffff !important;
+      border-color: #eee !important;
+      color: #333333 !important;
+    }
   }
 
   .field {
@@ -42,6 +49,14 @@
       outline: none;
       transition: border-color 0.15s, box-shadow 0.15s;
       background: #fff;
+      color: #333333;
+
+      /* ダークモードでも背景を白に固定 */
+      @media (prefers-color-scheme: dark) {
+        background: #ffffff !important;
+        border-color: #ccc !important;
+        color: #333333 !important;
+      }
 
       &:focus {
         border-color: #4a4a8a;
