@@ -4,8 +4,13 @@
       <img src="assets/HEATERs.jpg" alt="HEATERs logo" />
     </div>
 
-    <!-- 右上に何かテキストやリンク置きたければここ -->
-    <div class="header-right">スコットランド在住日本人のためのコミュニティーWebサイト</div>
+    <div class="header-center">
+      <span class="header-description">スコットランド在住日本人のためのコミュニティーWebサイト</span>
+    </div>
+
+    <div class="header-right">
+      <a routerLink="/about" class="about-link">HEATER'sについて</a>
+    </div>
   </div>
 
   <nav class="main-nav">
@@ -26,6 +31,15 @@
 </main>
 
 <footer class="site-footer">
-  <p>&copy; 2025 HEATERs</p>
+  <div class="footer-content">
+    <p>&copy; 2025 HEATERs</p>
+    <div class="footer-links">
+      <a routerLink="/about">HEATER'sについて</a>
+      <span class="separator">|</span>
+      <a routerLink="/privacy-policy">プライバシーポリシー</a>
+      <span class="separator">|</span>
+      <a routerLink="/terms-of-service">利用規約</a>
+    </div>
+  </div>
 </footer>
 
