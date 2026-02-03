@@ -33,6 +33,10 @@ export interface Post {
   buySellIntent?: 'buy' | 'sell';
   price?: number;
   priceCurrency?: 'GBP' | 'JPY';
+  contactEmail?: string;
+  contactInstagram?: string;
+  contactPhone?: string;
+  contactLine?: string;
 
   // Event
   eventDate?: number;

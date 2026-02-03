@@ -26,6 +26,28 @@
         価格: <strong>{{ post.price }}</strong> {{ post.priceCurrency }}
       </p>
 
+      <!-- 連絡先情報 -->
+      <div *ngIf="post.contactEmail || post.contactInstagram || post.contactPhone || post.contactLine" class="contact-info">
+        <h3>連絡先</h3>
+        <ul>
+          <li *ngIf="post.contactEmail">
+            📧 メール: <a [href]="'mailto:' + post.contactEmail">{{ post.contactEmail }}</a>
+          </li>
+          <li *ngIf="post.contactInstagram">
+            📷 Instagram: 
+            <a [href]="'https://instagram.com/' + post.contactInstagram" target="_blank" rel="noopener noreferrer">
+              @{{ post.contactInstagram }}
+            </a>
+          </li>
+          <li *ngIf="post.contactPhone">
+            📞 電話: <a [href]="'tel:' + post.contactPhone">{{ post.contactPhone }}</a>
+          </li>
+          <li *ngIf="post.contactLine">
+            💬 LINE: {{ post.contactLine }}
+          </li>
+        </ul>
+      </div>
+
     </ng-container>
 
     <!-- --------------------- -->
