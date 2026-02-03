@@ -42,6 +42,11 @@
           <span *ngIf="post.price != null">
             ・{{ post.price }} {{ post.priceCurrency || '' }}
           </span>
+
+          <!-- 連絡先の簡易表示 -->
+          <span *ngIf="post.contactEmail || post.contactInstagram || post.contactPhone || post.contactLine" class="contact-hint">
+            ・連絡先あり
+          </span>
         </ng-container>
 
         <!-- Event -->

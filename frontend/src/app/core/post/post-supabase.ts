@@ -14,6 +14,7 @@ export class PostSupabase {
         .select(`
           id, type, title, body, location, buy_sell_intent, price, price_currency,
           event_date, max_participants, article_category, user_id, created_at,
+          contact_email, contact_instagram, contact_phone, contact_line,
           profiles:profiles ( username )
         `)
         .eq('id', id)
@@ -38,6 +39,10 @@ export class PostSupabase {
             buySellIntent: row.buy_sell_intent ?? undefined,
             price: row.price ?? undefined,
             priceCurrency: row.price_currency ?? undefined,
+            contactEmail: row.contact_email ?? undefined,
+            contactInstagram: row.contact_instagram ?? undefined,
+            contactPhone: row.contact_phone ?? undefined,
+            contactLine: row.contact_line ?? undefined,
 
             eventDate: row.event_date ? Date.parse(row.event_date) : undefined,
             maxParticipants: row.max_participants ?? undefined,
@@ -54,6 +59,7 @@ export class PostSupabase {
     .select(`
       id, type, title, body, location, buy_sell_intent, price, price_currency,
       event_date, max_participants, article_category, user_id, created_at,
+      contact_email, contact_instagram, contact_phone, contact_line,
       profiles:profiles ( username )
     `)
     .order('created_at', { ascending: false });
@@ -77,6 +83,10 @@ export class PostSupabase {
         buySellIntent: row.buy_sell_intent ?? undefined,
         price: row.price ?? undefined,
         priceCurrency: row.price_currency ?? undefined,
+        contactEmail: row.contact_email ?? undefined,
+        contactInstagram: row.contact_instagram ?? undefined,
+        contactPhone: row.contact_phone ?? undefined,
+        contactLine: row.contact_line ?? undefined,
         eventDate: row.event_date ? Date.parse(row.event_date) : undefined,
         maxParticipants: row.max_participants ?? undefined,
       })) as Post[];
@@ -93,6 +103,7 @@ export class PostSupabase {
         .select(`
           id, type, title, body, location, buy_sell_intent, price, price_currency,
           event_date, max_participants, article_category, user_id, created_at,
+          contact_email, contact_instagram, contact_phone, contact_line,
           profiles:profiles ( username )
         `)
         .eq('user_id', userId)
@@ -118,6 +129,10 @@ export class PostSupabase {
         buySellIntent: row.buy_sell_intent ?? undefined,
         price: row.price ?? undefined,
         priceCurrency: row.price_currency ?? undefined,
+        contactEmail: row.contact_email ?? undefined,
+        contactInstagram: row.contact_instagram ?? undefined,
+        contactPhone: row.contact_phone ?? undefined,
+        contactLine: row.contact_line ?? undefined,
         eventDate: row.event_date ? Date.parse(row.event_date) : undefined,
         maxParticipants: row.max_participants ?? undefined,
       })) as Post[];

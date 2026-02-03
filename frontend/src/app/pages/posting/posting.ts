@@ -2,10 +2,8 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule, FormGroup } from '@angular/forms';
-import { PostService, PostType, Post } from '../../core/post';
-import { AuthService } from '../../core/auth';
-import { Firestore, doc, docData } from '@angular/fire/firestore';
-import { firstValueFrom } from 'rxjs';
+import { PostType } from '../../core/post';
+import { AuthSupabase } from '../../core/auth/auth-supabase';
 import { supabase } from '../../core/supabase/supabase.client';
 import { Router } from '@angular/router';
 
@@ -23,9 +21,7 @@ export class Posting {
 
   constructor(
     private fb: FormBuilder,
-    private postService: PostService,
-    private authService: AuthService,
-    private firestore: Firestore,
+    private auth: AuthSupabase,
     private router: Router,
   ) {
     this.form = this.fb.group({
@@ -39,6 +35,10 @@ export class Posting {
       buySellIntent: [null],
       price: [null],
       priceCurrency: ['GBP'],
+      contactEmail: [''],
+      contactInstagram: [''],
+      contactPhone: [''],
+      contactLine: [''],
 
       // Event 用
       eventDate: [null],          // HTML は type="date" → string が入る
@@ -48,7 +48,7 @@ export class Posting {
       articleCategory: [''],
     });
 
-    this.authService.user$.subscribe(user => {
+    this.auth.user$.subscribe(user => {
       this.currentUserId = user?.uid ?? null;
     });
   }
@@ -120,6 +120,7 @@ export class Posting {
       }
 
       const v = this.form.value;
+      const isBuySell = v.type === 'buy-sell';
 
       // ✅ posts に存在する列だけ送る
       const payload = {
@@ -131,6 +132,14 @@ export class Posting {
         article_category: v.articleCategory || null,
         price_currency: v.priceCurrency || null,
         // ※ price や event_date 等の列がDBに無いなら送らない（追加したいならDB側も追加）
+          // Buy & Sell（DB列は snake_case）
+        buy_sell_intent: isBuySell ? (v.buySellIntent || null) : null,
+        price: isBuySell && v.price != null ? Number(v.price) : null,
+
+        contact_email: isBuySell ? (v.contactEmail || null) : null,
+        contact_instagram: isBuySell ? (v.contactInstagram || null) : null,
+        contact_phone: isBuySell ? (v.contactPhone || null) : null,
+        contact_line: isBuySell ? (v.contactLine || null) : null,
       };
 
       const { error } = await supabase.from('posts').insert(payload);
