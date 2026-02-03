@@ -8,6 +8,9 @@ import { PostDetail } from './pages/post-detail/post-detail';
 import { SetupProfile } from './pages/setup-profile/setup-profile';
 import { AuthCallback } from './pages/auth-callback/auth-callback';
 import { CheckEmail } from './pages/check-email/check-email';
+import { PrivacyPolicy } from './pages/privacy-policy/privacy-policy';
+import { TermsOfService } from './pages/terms-of-service/terms-of-service';
+import { About } from './pages/about/about';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -41,6 +44,15 @@ export const routes: Routes = [
 
   // メール確認案内
   { path: 'check-email', component: CheckEmail },
+
+  // プライバシーポリシー
+  { path: 'privacy-policy', component: PrivacyPolicy },
+
+  // 利用規約
+  { path: 'terms-of-service', component: TermsOfService },
+
+  // HEATER'sについて
+  { path: 'about', component: About },
 
   // 404
   { path: '**', redirectTo: 'home' },

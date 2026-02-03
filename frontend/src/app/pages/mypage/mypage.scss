@@ -23,6 +23,13 @@ h1 {
   border: 1px solid #eee;
   margin-bottom: 2rem;
   animation: fadeIn 0.4s ease;
+  
+  /* ダークモードでも背景を白に固定 */
+  @media (prefers-color-scheme: dark) {
+    background: #ffffff !important;
+    border-color: #eee !important;
+    color: #333333 !important;
+  }
 }
 
 .user-card p {
@@ -78,6 +85,13 @@ h1 {
   border: 1px solid #ffd4d4;
   color: #b60000;
   font-size: 1rem;
+  
+  /* ダークモードでも背景を白に固定 */
+  @media (prefers-color-scheme: dark) {
+    background: #fff3f3 !important;
+    border-color: #ffd4d4 !important;
+    color: #b60000 !important;
+  }
 }
 
 /* --- Animations --- */

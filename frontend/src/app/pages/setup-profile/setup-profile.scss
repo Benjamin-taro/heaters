@@ -6,6 +6,12 @@
   border-radius: 8px;
   background: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  
+  /* ダークモードでも背景を白に固定 */
+  @media (prefers-color-scheme: dark) {
+    background: #ffffff !important;
+    color: #333333 !important;
+  }
 
   h2 {
     margin-bottom: 0.5rem;
@@ -15,6 +21,11 @@
     font-size: 0.9rem;
     color: #555;
     margin-bottom: 1.5rem;
+    
+    /* ダークモードでも色を固定 */
+    @media (prefers-color-scheme: dark) {
+      color: #555555 !important;
+    }
   }
 }
 
@@ -39,7 +50,15 @@
       padding: 0.5rem;
       border-radius: 4px;
       border: 1px solid #ccc;
-      background: #fafafa;
+      background: #ffffff;
+      color: #333333;
+
+      /* ダークモードでも背景を白に固定 */
+      @media (prefers-color-scheme: dark) {
+        background: #ffffff !important;
+        border-color: #ccc !important;
+        color: #333333 !important;
+      }
 
       &:focus {
         outline: none;

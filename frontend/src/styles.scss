@@ -1,3 +1,19 @@
+/* ダークモードでも背景を白に固定 */
+html,
+body {
+  background-color: #ffffff !important;
+  color: #333333 !important;
+}
+
+/* ダークモードの設定を上書き */
+@media (prefers-color-scheme: dark) {
+  html,
+  body {
+    background-color: #ffffff !important;
+    color: #333333 !important;
+  }
+}
+
 .site-header {
   padding: 12px 24px;
   border-bottom: 1px solid #ddd;
