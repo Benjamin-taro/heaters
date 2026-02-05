@@ -3,6 +3,7 @@ import { Home } from './pages/home/home';
 import { Listings } from './pages/listings/listings';
 import { Posting } from './pages/posting/posting'; 
 import { Login } from './pages/login/login';
+import { Signup } from './pages/signup/signup';
 import { MyPage } from './pages/mypage/mypage';  
 import { PostDetail } from './pages/post-detail/post-detail';
 import { SetupProfile } from './pages/setup-profile/setup-profile';
@@ -32,6 +33,9 @@ export const routes: Routes = [
 
   // ログイン
   { path: 'login', component: Login },
+
+  // 新規登録
+  { path: 'signup', component: Signup },
 
   // プロフィール設定（初回ログイン時）
   { path: 'setup-profile', component: SetupProfile },

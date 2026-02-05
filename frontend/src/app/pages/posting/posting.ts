@@ -1,11 +1,32 @@
 // src/app/pages/posting/posting.ts
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, Validators, ReactiveFormsModule, FormGroup } from '@angular/forms';
+import {
+  FormBuilder,
+  Validators,
+  ReactiveFormsModule,
+  FormGroup,
+  AbstractControl,
+  ValidationErrors,
+} from '@angular/forms';
 import { PostType } from '../../core/post';
 import { AuthSupabase } from '../../core/auth/auth-supabase';
 import { supabase } from '../../core/supabase/supabase.client';
 import { Router } from '@angular/router';
+
+/** Buy & Sell のとき、連絡先（メール/Instagram/電話/LINE）のいずれか1つ必須 */
+function atLeastOneContactValidator(group: AbstractControl): ValidationErrors | null {
+  const g = group as FormGroup;
+  if (g.get('type')?.value !== 'buy-sell') return null;
+  const email = g.get('contactEmail')?.value;
+  const instagram = g.get('contactInstagram')?.value;
+  const phone = g.get('contactPhone')?.value;
+  const line = g.get('contactLine')?.value;
+  const hasContact = [email, instagram, phone, line].some(
+    (v) => v != null && String(v).trim() !== ''
+  );
+  return hasContact ? null : { atLeastOneContactRequired: true };
+}
 
 @Component({
   selector: 'app-posting-page',
@@ -51,10 +72,69 @@ export class Posting {
     this.auth.user$.subscribe(user => {
       this.currentUserId = user?.uid ?? null;
     });
+
+    this.form.get('type')?.valueChanges.subscribe(() => this.updateValidators());
+    this.updateValidators();
+  }
+
+  private updateValidators(): void {
+    const type = this.form.get('type')?.value as PostType;
+    const buySellIntent = this.form.get('buySellIntent');
+    const price = this.form.get('price');
+    const priceCurrency = this.form.get('priceCurrency');
+    const location = this.form.get('location');
+    const eventDate = this.form.get('eventDate');
+
+    buySellIntent?.clearValidators();
+    price?.clearValidators();
+    priceCurrency?.clearValidators();
+    location?.clearValidators();
+    eventDate?.clearValidators();
+    this.form.clearValidators();
+
+    if (type === 'buy-sell') {
+      buySellIntent?.setValidators(Validators.required);
+      price?.setValidators(Validators.required);
+      priceCurrency?.setValidators(Validators.required);
+      this.form.setValidators(atLeastOneContactValidator);
+    } else if (type === 'event') {
+      location?.setValidators(Validators.required);
+      eventDate?.setValidators(Validators.required);
+    }
+
+    buySellIntent?.updateValueAndValidity();
+    price?.updateValueAndValidity();
+    priceCurrency?.updateValueAndValidity();
+    location?.updateValueAndValidity();
+    eventDate?.updateValueAndValidity();
+    this.form.updateValueAndValidity();
   }
 
   get selectedType(): PostType {
     return this.form.get('type')?.value as PostType;
+  }
+
+  get contactRequiredError(): boolean {
+    return this.form.errors?.['atLeastOneContactRequired'] === true;
+  }
+
+  /** 未入力の必須項目のラベル一覧（送信できない理由の表示用） */
+  get missingRequiredFields(): string[] {
+    const type = this.form.get('type')?.value as PostType;
+    const missing: string[] = [];
+    if (!this.form.get('title')?.value?.trim()) missing.push('タイトル');
+    if (!this.form.get('body')?.value?.trim()) missing.push('内容');
+    if (type === 'buy-sell') {
+      if (!this.form.get('buySellIntent')?.value) missing.push('買いたい/売りたい');
+      const price = this.form.get('price')?.value;
+      if (price === null || price === undefined || price === '') missing.push('価格');
+      if (!this.form.get('priceCurrency')?.value) missing.push('通貨');
+      if (this.form.errors?.['atLeastOneContactRequired']) missing.push('連絡先（いずれか1つ）');
+    } else if (type === 'event') {
+      if (!this.form.get('location')?.value?.trim()) missing.push('場所');
+      if (!this.form.get('eventDate')?.value) missing.push('日付');
+    }
+    return missing;
   }
 
   // async onSubmit() {

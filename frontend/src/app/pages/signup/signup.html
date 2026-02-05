@@ -1,0 +1,42 @@
+<div class="signup-container">
+  <h2>Sign up</h2>
+  <p class="subtitle">メールアドレスとパスワードを設定してアカウントを作成します。</p>
+
+  <div class="auth-card">
+    <form (ngSubmit)="onSubmit()" class="auth-form">
+      <div class="field">
+        <label for="email">メールアドレス</label>
+        <input
+          id="email"
+          type="email"
+          name="email"
+          [(ngModel)]="email"
+          placeholder="例: example@gmail.com"
+          required
+        />
+      </div>
+
+      <div class="field">
+        <label for="password">パスワード</label>
+        <input
+          id="password"
+          type="password"
+          name="password"
+          [(ngModel)]="password"
+          placeholder="8文字以上"
+          required
+        />
+      </div>
+
+      <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+
+      <div class="actions">
+        <button type="submit" [disabled]="loading">
+          {{ loading ? '登録中...' : 'アカウントを作成' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <a routerLink="/login" class="back-to-login">← ログインに戻る</a>
+</div>

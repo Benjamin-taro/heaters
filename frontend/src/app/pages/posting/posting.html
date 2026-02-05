@@ -5,7 +5,7 @@
   <form [formGroup]="form" (ngSubmit)="onSubmit()" class="posting-form">
     <!-- 共通: カテゴリー -->
     <div class="field">
-      <label for="type">カテゴリー</label>
+      <label for="type">カテゴリー <span class="required">*</span></label>
       <select id="type" formControlName="type">
         <option value="buy-sell">Buy & Sell</option>
         <option value="event">Event</option>
@@ -15,13 +15,13 @@
 
     <!-- 共通: タイトル -->
     <div class="field">
-      <label for="title">タイトル</label>
+      <label for="title">タイトル <span class="required">*</span></label>
       <input id="title" formControlName="title" placeholder="例：IKEAのテーブル譲ります" />
     </div>
 
     <!-- 共通: 内容 -->
     <div class="field">
-      <label for="body">内容</label>
+      <label for="body">内容 <span class="required">*</span></label>
       <textarea
         id="body"
         formControlName="body"
@@ -34,7 +34,7 @@
     <div class="field">
     <label for="location">
         場所
-        <span *ngIf="selectedType === 'event'">（イベント会場）</span>
+        <span *ngIf="selectedType === 'event'">（イベント会場） <span class="required">*</span></span>
     </label>
     <input
         id="location"
@@ -48,7 +48,7 @@
     <!-- ★ Buy & Sell 専用フィールド -->
     <ng-container *ngIf="selectedType === 'buy-sell'">
       <div class="field">
-        <label>買いたい / 売りたい</label>
+        <label>買いたい / 売りたい <span class="required">*</span></label>
         <select formControlName="buySellIntent">
           <option [ngValue]="null">選択してください</option>
           <option value="buy">買いたい</option>
@@ -58,7 +58,7 @@
 
       <div class="field-inline">
         <div class="field">
-          <label for="price">価格</label>
+          <label for="price">価格 <span class="required">*</span></label>
           <input
             id="price"
             type="number"
@@ -68,7 +68,7 @@
         </div>
 
         <div class="field">
-          <label for="priceCurrency">通貨</label>
+          <label for="priceCurrency">通貨 <span class="required">*</span></label>
           <select id="priceCurrency" formControlName="priceCurrency">
             <option value="GBP">GBP (£)</option>
             <option value="JPY">JPY (¥)</option>
@@ -76,7 +76,7 @@
         </div>
       </div>
 
-      <!-- ★ 連絡先 -->
+      <!-- ★ 連絡先（いずれか1つ必須） -->
       <div class="field">
         <label for="contactEmail">メール</label>
         <input
@@ -121,7 +121,7 @@
     <!-- ★ Event 専用フィールド -->
     <ng-container *ngIf="selectedType === 'event'">
       <div class="field">
-        <label for="eventDate">日付</label>
+        <label for="eventDate">日付 <span class="required">*</span></label>
         <input id="eventDate" type="date" formControlName="eventDate" />
       </div>
 
@@ -150,9 +150,13 @@
 
     <!-- 送信ボタン -->
     <div class="actions">
+      <p *ngIf="contactRequiredError" class="error-hint">連絡先を1つ以上入力してください。</p>
       <button type="submit" [disabled]="form.invalid || loading || !currentUserId">
         {{ loading ? 'Posting...' : 'Post' }}
       </button>
+      <p *ngIf="form.invalid && missingRequiredFields.length > 0" class="missing-fields-hint">
+        以下の必須項目が入力されていません：{{ missingRequiredFields.join('、') }}
+      </p>
       <p *ngIf="!currentUserId" class="login-hint">
         ※投稿するにはログインが必要です
       </p>
