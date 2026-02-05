@@ -201,6 +201,7 @@ export class Posting {
 
       const v = this.form.value;
       const isBuySell = v.type === 'buy-sell';
+      const isEvent = v.type === 'event';
 
       // ✅ posts に存在する列だけ送る
       const payload = {
@@ -211,15 +212,18 @@ export class Posting {
         location: v.location || null,
         article_category: v.articleCategory || null,
         price_currency: v.priceCurrency || null,
-        // ※ price や event_date 等の列がDBに無いなら送らない（追加したいならDB側も追加）
-          // Buy & Sell（DB列は snake_case）
+
+        // Buy & Sell（DB列は snake_case）
         buy_sell_intent: isBuySell ? (v.buySellIntent || null) : null,
         price: isBuySell && v.price != null ? Number(v.price) : null,
-
         contact_email: isBuySell ? (v.contactEmail || null) : null,
         contact_instagram: isBuySell ? (v.contactInstagram || null) : null,
         contact_phone: isBuySell ? (v.contactPhone || null) : null,
         contact_line: isBuySell ? (v.contactLine || null) : null,
+
+        // Event
+        event_date: isEvent && v.eventDate ? v.eventDate : null,
+        max_participants: isEvent && v.maxParticipants != null ? Number(v.maxParticipants) : null,
       };
 
       const { error } = await supabase.from('posts').insert(payload);

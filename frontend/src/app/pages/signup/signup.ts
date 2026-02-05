@@ -20,16 +20,36 @@ export class Signup {
   errorMessage = '';
   loading = false;
 
+  /** パスワードが英小文字・英大文字・数字をそれぞれ1文字以上含むか */
+  private meetsPasswordComplexity(password: string): boolean {
+    return (
+      /[a-z]/.test(password) &&
+      /[A-Z]/.test(password) &&
+      /\d/.test(password)
+    );
+  }
+
   async onSubmit() {
     this.errorMessage = '';
-    if (!this.email.trim() || !this.password) {
+    const emailTrimmed = this.email.trim();
+    const passwordTrimmed = this.password.trim();
+    if (!emailTrimmed || !passwordTrimmed) {
       this.errorMessage = 'メールアドレスとパスワードを入力してください。';
+      return;
+    }
+    if (passwordTrimmed.length < 8) {
+      this.errorMessage = 'パスワードは8文字以上で入力してください。';
+      return;
+    }
+    if (!this.meetsPasswordComplexity(passwordTrimmed)) {
+      this.errorMessage =
+        'パスワードは英小文字・英大文字・数字をそれぞれ1文字以上含めてください。';
       return;
     }
 
     this.loading = true;
     try {
-      await this.auth.signUp(this.email, this.password);
+      await this.auth.signUp(emailTrimmed, passwordTrimmed);
       this.router.navigate(['/check-email']);
     } catch (err) {
       console.error(err);

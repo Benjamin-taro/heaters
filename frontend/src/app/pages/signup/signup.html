@@ -23,9 +23,10 @@
           type="password"
           name="password"
           [(ngModel)]="password"
-          placeholder="8文字以上"
+          placeholder="8文字以上・英小文字・大文字・数字を含む"
           required
         />
+        <p class="field-hint">8文字以上、英小文字・英大文字・数字をそれぞれ1文字以上含めてください。</p>
       </div>
 
       <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
