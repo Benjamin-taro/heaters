@@ -1,6 +1,6 @@
 // src/app/shared/post-detail-view/post-detail-view.ts
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Post } from '../../core/post';
 
@@ -13,4 +13,16 @@ import { Post } from '../../core/post';
 })
 export class PostDetailView {
   @Input() post: Post | null = null;
+  /** 現在ログイン中のユーザーID。投稿者と一致するときのみ編集・削除を表示 */
+  @Input() currentUserId: string | null = null;
+  @Output() deleteRequested = new EventEmitter<string>();
+
+  get canEdit(): boolean {
+    return !!(
+      this.post?.id &&
+      this.post?.userId &&
+      this.currentUserId &&
+      this.post.userId === this.currentUserId
+    );
+  }
 }

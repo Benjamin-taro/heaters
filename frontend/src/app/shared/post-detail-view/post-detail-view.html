@@ -84,6 +84,14 @@
       投稿者: {{ post.username }}<br />
       投稿日: {{ post.createdAt | date: 'yyyy/MM/dd HH:mm' }}
     </p>
+
+    <!-- 投稿者本人のみ編集・削除 -->
+    <div *ngIf="canEdit" class="author-actions">
+      <a [routerLink]="['/posts', post.id, 'edit']" class="action-link edit-link">編集</a>
+      <button type="button" class="action-btn delete-btn" (click)="deleteRequested.emit(post.id!)">
+        削除
+      </button>
+    </div>
   </article>
 
   <a routerLink="/listing" class="back-link">← 投稿一覧に戻る</a>

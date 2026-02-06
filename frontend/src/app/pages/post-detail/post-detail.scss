@@ -70,6 +70,82 @@
   font-size: 1rem;
 }
 
+/* --- 削除確認ポップアップ --- */
+.delete-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  animation: fadeIn 0.2s ease;
+}
+
+.delete-modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem 1.75rem;
+  max-width: 360px;
+  width: 100%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  border: 1px solid #eee;
+
+  @media (prefers-color-scheme: dark) {
+    background: #fff !important;
+    color: #333 !important;
+    border-color: #eee !important;
+  }
+}
+
+.delete-modal-message {
+  margin: 0 0 1.25rem 0;
+  font-size: 1rem;
+  color: #333;
+  line-height: 1.5;
+}
+
+.delete-modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.delete-modal-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+  border: none;
+  font-family: inherit;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &.cancel {
+    background: #f0f0f0;
+    color: #444;
+
+    &:hover:not(:disabled) {
+      background: #e5e5e5;
+    }
+  }
+
+  &.confirm {
+    background: #b04a4a;
+    color: #fff;
+
+    &:hover:not(:disabled) {
+      background: #9a3d3d;
+    }
+  }
+}
+
 /* --- アニメーション --- */
 @keyframes fadeIn {
   0% {

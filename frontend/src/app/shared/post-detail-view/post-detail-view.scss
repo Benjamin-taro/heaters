@@ -46,6 +46,48 @@
   white-space: pre-line;
 }
 
+/* --- 投稿者用 編集・削除 --- */
+.author-actions {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.action-link,
+.action-btn {
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  border: none;
+  font-family: inherit;
+}
+
+.edit-link {
+  background: #4a4a8a;
+  color: #fff;
+
+  &:hover {
+    background: #3a3a7a;
+  }
+}
+
+.delete-btn {
+  background: transparent;
+  color: #b04a4a;
+  border: 1px solid #b04a4a;
+
+  &:hover {
+    background: #fef0f0;
+  }
+}
+
 /* --- 戻るリンク --- */
 .back-link {
   display: inline-block;
