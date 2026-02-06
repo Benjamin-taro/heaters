@@ -7,6 +7,13 @@ import { RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { Router } from '@angular/router';
 import { supabase } from '../../core/supabase/supabase.client';
+import { Observable, from, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+
+export interface LoginState {
+  user: { uid: string; email?: string | null } | null;
+  username: string | null;
+}
 
 @Component({
   selector: 'app-login-page',
@@ -21,6 +28,21 @@ export class Login {
 
   email = '';
   password = '';
+
+  /** ログイン中ユーザーとプロフィール（ユーザー名）をまとめた状態 */
+  loginState$: Observable<LoginState> = this.auth.user$.pipe(
+    switchMap((user) => {
+      if (!user) return of({ user: null, username: null });
+      return from(
+        supabase
+          .from('profiles')
+          .select('username')
+          .eq('id', user.uid)
+          .maybeSingle()
+          .then(({ data }) => ({ user, username: data?.username ?? null }))
+      );
+    })
+  );
 
   async requestEmailLogin() {
     const { user } = await this.auth.signIn(this.email, this.password);

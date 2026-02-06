@@ -88,4 +88,26 @@ export class AuthSupabase {
     if (error) throw error;
   }
 
+  /**
+   * パスワード再設定メールを送信する（「パスワードを忘れた」用）。
+   * メール内のリンクで update-password ページに飛び、そこで新しいパスワードを設定する。
+   * Supabase ダッシュボードの Auth → URL Configuration に
+   * リダイレクトURL（例: https://your-domain.com/update-password）を追加しておくこと。
+   */
+  async resetPasswordForEmail(email: string): Promise<void> {
+    const redirectTo = `${window.location.origin}/update-password`;
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo,
+    });
+    if (error) throw error;
+  }
+
+  /**
+   * ログイン中ユーザーのパスワードを変更する。
+   * 再設定メールのリンクから来た場合も、そのページでこのメソッドを呼ぶ。
+   */
+  async updatePassword(newPassword: string): Promise<void> {
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (error) throw error;
+  }
 }
