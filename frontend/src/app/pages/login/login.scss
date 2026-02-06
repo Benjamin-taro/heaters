@@ -26,11 +26,24 @@
 
   .logged-in {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
 
     .greeting {
       margin: 0;
+      font-size: 1.1rem;
+    }
+
+    .login-info {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #444;
+      line-height: 1.5;
+    }
+
+    button {
+      margin-top: 0.5rem;
     }
   }
 
@@ -153,6 +166,22 @@
     margin-top: 1.25rem;
     padding-top: 1rem;
     border-top: 1px solid #eee;
+  }
+
+  .forgot-password-wrap {
+    margin-top: 0.75rem;
+    text-align: center;
+  }
+
+  .forgot-password-link {
+    font-size: 0.85rem;
+    color: #666;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+      color: #4a4a8a;
+    }
   }
 
   .signup-link {

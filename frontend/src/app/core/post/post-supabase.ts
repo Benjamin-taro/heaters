@@ -96,6 +96,24 @@ export class PostSupabase {
 
 
 
+  /** 投稿を更新。投稿者本人のみ実行可能（Supabase RLS で制御推奨） */
+  async updatePost(id: string, payload: Partial<Record<string, unknown>>): Promise<void> {
+    const { error } = await supabase
+      .from('posts')
+      .update(payload)
+      .eq('id', id);
+    if (error) throw error;
+  }
+
+  /** 投稿を削除。投稿者本人のみ実行可能（Supabase RLS で制御推奨） */
+  async deletePost(id: string): Promise<void> {
+    const { error } = await supabase
+      .from('posts')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+  }
+
   getPostsByUser(userId: string, type?: PostType): Observable<Post[]> {
     return from((async () => {
       let q = supabase

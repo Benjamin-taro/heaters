@@ -1,8 +1,27 @@
 <!-- post-detail.html -->
 <ng-container *ngIf="post$ | async as post; else loading">
-  <app-post-detail-view [post]="post ?? null"></app-post-detail-view>
+  <app-post-detail-view
+    [post]="post ?? null"
+    [currentUserId]="currentUserId"
+    (deleteRequested)="onDeletePost($event)"
+  ></app-post-detail-view>
 </ng-container>
 
 <ng-template #loading>
   <p>Loading...</p>
 </ng-template>
+
+<!-- 削除確認ポップアップ -->
+<div *ngIf="deleteConfirmId" class="delete-overlay" (click)="cancelDelete()">
+  <div class="delete-modal" (click)="$event.stopPropagation()">
+    <p class="delete-modal-message">本当にこの投稿を削除しますか？</p>
+    <div class="delete-modal-actions">
+      <button type="button" class="delete-modal-btn cancel" (click)="cancelDelete()" [disabled]="deleteInProgress">
+        キャンセル
+      </button>
+      <button type="button" class="delete-modal-btn confirm" (click)="confirmDelete()" [disabled]="deleteInProgress">
+        {{ deleteInProgress ? '削除中...' : '削除する' }}
+      </button>
+    </div>
+  </div>
+</div>

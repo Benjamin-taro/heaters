@@ -3,12 +3,17 @@
   <h2>Login</h2>
 
   <!-- ログイン中 -->
-  <div *ngIf="auth.user$ | async as user; else loggedOut" class="auth-card logged-in">
-    <p class="greeting">
-      <!-- Hi, <strong>{{ user.displayName || user.email }}</strong> -->
-       Hi!
-    </p>
-    <button type="button" (click)="logout()">Logout</button>
+  <div *ngIf="loginState$ | async as state">
+    <div *ngIf="state.user; else loggedOut" class="auth-card logged-in">
+      <p class="greeting">Hi!</p>
+      <p class="login-info">
+        このメールアドレスでログインしています：<strong>{{ state.user.email || '（メール未設定）' }}</strong>
+      </p>
+      <p *ngIf="state.username" class="login-info">
+        ユーザー名：<strong>{{ state.username }}</strong>
+      </p>
+      <button type="button" (click)="logout()">Logout</button>
+    </div>
   </div>
 
   <!-- 未ログイン -->
@@ -71,6 +76,10 @@
       <div class="signup-link-wrap">
         <a routerLink="/signup" class="signup-link">Sign up</a>
       </div>
+
+      <p class="forgot-password-wrap">
+        <a routerLink="/forgot-password" class="forgot-password-link">パスワードを忘れた方</a>
+      </p>
     </div>
   </ng-template>
 </div>
