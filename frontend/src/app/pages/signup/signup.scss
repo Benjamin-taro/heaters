@@ -1,0 +1,123 @@
+.signup-container {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 2.5rem;
+  text-align: center;
+
+  h2 {
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 1.5rem;
+  }
+
+  .auth-card {
+    background: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    padding: 1.5rem;
+    text-align: left;
+    margin-bottom: 1.5rem;
+
+    @media (prefers-color-scheme: dark) {
+      background: #ffffff !important;
+      border-color: #eee !important;
+      color: #333333 !important;
+    }
+  }
+
+  .auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+
+      label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #444;
+      }
+
+      .field-hint {
+        font-size: 0.8rem;
+        color: #666;
+        margin: 0;
+      }
+
+      input {
+        padding: 0.45rem 0.6rem;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        font-size: 0.95rem;
+        font-family: inherit;
+        outline: none;
+        transition: border-color 0.15s, box-shadow 0.15s;
+        background: #fff;
+        color: #333333;
+
+        @media (prefers-color-scheme: dark) {
+          background: #ffffff !important;
+          border-color: #ccc !important;
+          color: #333333 !important;
+        }
+
+        &:focus {
+          border-color: #4a4a8a;
+          box-shadow: 0 0 0 2px rgba(74, 74, 138, 0.15);
+        }
+      }
+    }
+
+    .error-message {
+      font-size: 0.85rem;
+      color: #c00;
+      margin: 0;
+    }
+
+    .actions {
+      margin-top: 0.3rem;
+
+      button {
+        width: 100%;
+        padding: 0.5rem 1rem;
+        border-radius: 999px;
+        border: none;
+        background: #4a4a8a;
+        color: #fff;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.15s, transform 0.1s;
+
+        &:hover:not(:disabled) {
+          background: #3a3a7a;
+          transform: translateY(-1px);
+        }
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+
+  .back-to-login {
+    display: inline-block;
+    color: #4a4a8a;
+    text-decoration: none;
+    font-size: 0.9rem;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

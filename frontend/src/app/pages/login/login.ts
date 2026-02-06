@@ -3,6 +3,7 @@ import { Component, inject } from '@angular/core';
 import { AuthSupabase } from '../../core/auth/auth-supabase';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { Router } from '@angular/router';
 import { supabase } from '../../core/supabase/supabase.client';
@@ -10,7 +11,7 @@ import { supabase } from '../../core/supabase/supabase.client';
 @Component({
   selector: 'app-login-page',
   standalone: true,
-  imports: [AsyncPipe, NgIf, FormsModule, ButtonModule],
+  imports: [AsyncPipe, NgIf, FormsModule, RouterModule, ButtonModule],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
@@ -37,22 +38,6 @@ export class Login {
       this.router.navigate(['/']);
     }
   }
-
-
-  async requestEmailRegister() {
-    try {
-      await this.auth.signUp(this.email, this.password);
-
-      // ❌ login しない
-      // ❌ setup-profile にも行かない
-
-      // ✅ 確認メール案内ページへ
-      this.router.navigate(['/check-email']);
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
 
 
   logout() {

@@ -121,20 +121,20 @@
     }
 
     .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      align-items: center;
       margin-top: 0.3rem;
 
       button {
+        display: block;
+        width: 100%;
         padding: 0.45rem 1rem;
         border-radius: 999px;
         border: none;
         font-size: 0.9rem;
         font-weight: 600;
+        text-align: center;
         cursor: pointer;
         transition: background 0.15s, transform 0.1s;
+        box-sizing: border-box;
       }
 
       button[type="submit"] {
@@ -146,16 +146,34 @@
           transform: translateY(-1px);
         }
       }
+    }
+  }
 
-      .link-btn {
-        background: transparent;
-        color: #4a4a8a;
-        text-decoration: underline;
+  .signup-link-wrap {
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+  }
 
-        &:hover {
-          background: #f3f3ff;
-        }
-      }
+  .signup-link {
+    display: block;
+    width: 100%;
+    padding: 0.45rem 1rem;
+    border-radius: 999px;
+    border: none;
+    background: #4a4a8a;
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    box-sizing: border-box;
+
+    &:hover {
+      background: #3a3a7a;
+      transform: translateY(-1px);
     }
   }
 }
