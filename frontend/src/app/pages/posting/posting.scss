@@ -38,6 +38,11 @@
       color: #444;
     }
 
+    .required {
+      color: #c00;
+      font-weight: 600;
+    }
+
     input,
     select,
     textarea {
@@ -101,6 +106,18 @@
     .login-hint {
       font-size: 0.8rem;
       color: #b04a4a;
+    }
+
+    .error-hint {
+      font-size: 0.85rem;
+      color: #c00;
+      margin: 0 0 0.5rem 0;
+    }
+
+    .missing-fields-hint {
+      font-size: 0.9rem;
+      color: #c00;
+      margin: 0.75rem 0 0 0;
     }
   }
 }
