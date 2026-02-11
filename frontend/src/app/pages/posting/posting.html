@@ -45,6 +45,35 @@
     />
     </div>
 
+    <!-- 共通: 画像アップロード -->
+    <div class="field">
+      <label for="images">画像（オプション）</label>
+      <input
+        id="images"
+        type="file"
+        accept="image/*"
+        multiple
+        (change)="onImageSelected($event)"
+        [disabled]="loading"
+      />
+      <p class="field-hint">最大10枚までアップロードできます。</p>
+      
+      <!-- 画像プレビュー -->
+      <div *ngIf="imagePreviews.length > 0" class="image-previews">
+        <div *ngFor="let preview of imagePreviews; let i = index" class="image-preview-item">
+          <img [src]="preview" [alt]="'プレビュー ' + (i + 1)" />
+          <button
+            type="button"
+            class="remove-image-btn"
+            (click)="removeImage(i)"
+            [disabled]="loading"
+          >
+            ×
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- ★ Buy & Sell 専用フィールド -->
     <ng-container *ngIf="selectedType === 'buy-sell'">
       <div class="field">
