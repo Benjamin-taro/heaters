@@ -12,6 +12,15 @@
       📍 場所: {{ post.location }}
     </p>
 
+    <!-- 共通: 画像 -->
+    <div *ngIf="post.imageUrls && post.imageUrls.length > 0" class="post-images">
+      <div class="image-grid">
+        <div *ngFor="let imageUrl of post.imageUrls" class="image-item">
+          <img [src]="imageUrl" [alt]="post.title + ' の画像'" loading="lazy" />
+        </div>
+      </div>
+    </div>
+
     <!-- --------------------- -->
     <!-- Buy & Sell 表示部分 -->
     <!-- --------------------- -->

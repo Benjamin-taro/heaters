@@ -42,6 +42,58 @@
         />
       </div>
 
+      <!-- 画像編集 -->
+      <div class="field">
+        <label for="images">画像（オプション）</label>
+        
+        <!-- 既存の画像 -->
+        <div *ngIf="existingImages.length > 0" class="existing-images">
+          <p class="field-hint">既存の画像（クリックで削除）</p>
+          <div class="image-previews">
+            <div *ngFor="let imageUrl of existingImages; let i = index" class="image-preview-item">
+              <img [src]="imageUrl" [alt]="'既存画像 ' + (i + 1)" />
+              <button
+                type="button"
+                class="remove-image-btn"
+                (click)="removeExistingImage(i)"
+                [disabled]="loading"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 新規画像追加 -->
+        <input
+          id="images"
+          type="file"
+          accept="image/*"
+          multiple
+          (change)="onImageSelected($event)"
+          [disabled]="loading"
+        />
+        <p class="field-hint">最大10枚までアップロードできます。</p>
+        
+        <!-- 新規追加画像のプレビュー -->
+        <div *ngIf="imagePreviews.length > 0" class="new-images">
+          <p class="field-hint">新規追加する画像</p>
+          <div class="image-previews">
+            <div *ngFor="let preview of imagePreviews; let i = index" class="image-preview-item">
+              <img [src]="preview" [alt]="'プレビュー ' + (i + 1)" />
+              <button
+                type="button"
+                class="remove-image-btn"
+                (click)="removeNewImage(i)"
+                [disabled]="loading"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <ng-container *ngIf="selectedType === 'buy-sell'">
         <div class="field">
           <label>買いたい / 売りたい <span class="required">*</span></label>
