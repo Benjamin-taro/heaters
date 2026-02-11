@@ -15,6 +15,7 @@ import { PostType } from '../../core/post';
 import { Post } from '../../core/post';
 import { AuthSupabase } from '../../core/auth/auth-supabase';
 import { PostSupabase } from '../../core/post/post-supabase';
+import { supabase } from '../../core/supabase/supabase.client';
 
 function atLeastOneContactValidator(group: AbstractControl): ValidationErrors | null {
   const g = group as FormGroup;
@@ -48,6 +49,9 @@ export class PostEdit implements OnInit {
   forbidden = false;
   postId: string | null = null;
   form!: FormGroup;
+  existingImages: string[] = []; // 既存の画像URL
+  selectedImages: File[] = []; // 新規追加する画像ファイル
+  imagePreviews: string[] = []; // 新規追加画像のプレビュー
 
   constructor() {
     this.form = this.fb.group({
@@ -121,6 +125,8 @@ export class PostEdit implements OnInit {
       maxParticipants: post.maxParticipants ?? null,
       articleCategory: post.articleCategory ?? '',
     });
+    // 既存の画像を設定
+    this.existingImages = post.imageUrls ?? [];
     this.updateValidators();
   }
 
@@ -183,6 +189,82 @@ export class PostEdit implements OnInit {
     return missing;
   }
 
+  onImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files) return;
+
+    const files = Array.from(input.files);
+    const imageFiles = files.filter(file => file.type.startsWith('image/'));
+
+    // 既存の画像と新規追加画像の合計が最大10枚まで
+    const totalImages = this.existingImages.length + this.selectedImages.length + imageFiles.length;
+    if (totalImages > 10) {
+      alert('画像は最大10枚までアップロードできます。');
+      return;
+    }
+
+    this.selectedImages.push(...imageFiles);
+
+    // プレビュー用URLを生成
+    imageFiles.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        if (result) {
+          this.imagePreviews.push(result);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+
+    input.value = '';
+  }
+
+  removeExistingImage(index: number): void {
+    this.existingImages.splice(index, 1);
+  }
+
+  removeNewImage(index: number): void {
+    this.selectedImages.splice(index, 1);
+    this.imagePreviews.splice(index, 1);
+  }
+
+  /** Supabase Storageに画像をアップロードしてURL配列を返す */
+  private async uploadImages(postId: string): Promise<string[]> {
+    if (this.selectedImages.length === 0) return [];
+
+    const uploadedUrls: string[] = [];
+
+    for (let i = 0; i < this.selectedImages.length; i++) {
+      const file = this.selectedImages[i];
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${i}.${fileExt}`;
+      const filePath = `${postId}/${fileName}`;
+
+      const { data, error } = await supabase.storage
+        .from('post-images')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false,
+        });
+
+      if (error) {
+        console.error(`画像アップロードエラー (${file.name}):`, error);
+        continue;
+      }
+
+      const { data: urlData } = supabase.storage
+        .from('post-images')
+        .getPublicUrl(filePath);
+
+      if (urlData?.publicUrl) {
+        uploadedUrls.push(urlData.publicUrl);
+      }
+    }
+
+    return uploadedUrls;
+  }
+
   async onSubmit(): Promise<void> {
     if (this.form.invalid || !this.postId) return;
 
@@ -192,7 +274,12 @@ export class PostEdit implements OnInit {
       const isBuySell = v.type === 'buy-sell';
       const isEvent = v.type === 'event';
 
-      const payload = {
+      // 新規画像をアップロード
+      const newImageUrls = await this.uploadImages(this.postId);
+      // 既存画像と新規画像を結合
+      const allImageUrls = [...this.existingImages, ...newImageUrls];
+
+      const payload: any = {
         type: v.type,
         title: v.title,
         body: v.body,
@@ -207,12 +294,14 @@ export class PostEdit implements OnInit {
         contact_line: isBuySell ? (v.contactLine || null) : null,
         event_date: isEvent && v.eventDate ? v.eventDate : null,
         max_participants: isEvent && v.maxParticipants != null ? Number(v.maxParticipants) : null,
+        image_urls: allImageUrls.length > 0 ? allImageUrls : null,
       };
 
       await this.postSupabase.updatePost(this.postId, payload);
       this.router.navigate(['/posts', this.postId]);
     } catch (e) {
       console.error(e);
+      alert('投稿の更新に失敗しました。もう一度お試しください。');
     } finally {
       this.loading = false;
     }

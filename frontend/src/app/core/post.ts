@@ -28,6 +28,7 @@ export interface Post {
   username: string;
   type: PostType;
   location?: string;   // ★ 共通の場所
+  imageUrls?: string[]; // ★ 画像URL配列（オプショナル）
 
   // Buy & Sell
   buySellIntent?: 'buy' | 'sell';

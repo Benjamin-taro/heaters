@@ -39,6 +39,8 @@ export class Posting {
   loading = false;
   currentUserId: string | null = null;
   form!: FormGroup;
+  selectedImages: File[] = [];
+  imagePreviews: string[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -185,6 +187,85 @@ export class Posting {
   //   }
   // }
 
+  onImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files) return;
+
+    const files = Array.from(input.files);
+    const imageFiles = files.filter(file => file.type.startsWith('image/'));
+
+    // 既存の画像に追加（最大10枚まで）
+    const totalImages = this.selectedImages.length + imageFiles.length;
+    if (totalImages > 10) {
+      alert('画像は最大10枚までアップロードできます。');
+      return;
+    }
+
+    this.selectedImages.push(...imageFiles);
+
+    // プレビュー用URLを生成
+    imageFiles.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        if (result) {
+          this.imagePreviews.push(result);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // inputをリセット（同じファイルを再度選択できるように）
+    input.value = '';
+  }
+
+  removeImage(index: number): void {
+    this.selectedImages.splice(index, 1);
+    this.imagePreviews.splice(index, 1);
+  }
+
+  /** Supabase Storageに画像をアップロードしてURL配列を返す */
+  private async uploadImages(postId: string, userId: string): Promise<string[]> {
+    if (this.selectedImages.length === 0) return [];
+
+    const uploadedUrls: string[] = [];
+
+    for (let i = 0; i < this.selectedImages.length; i++) {
+      const file = this.selectedImages[i];
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${i}.${fileExt}`;
+      // .from('post-images')を使っているので、パスにはバケット名を含めない
+      const filePath = `${postId}/${fileName}`;
+
+      const { data, error } = await supabase.storage
+        .from('post-images')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false,
+        });
+
+      if (error) {
+        console.error(`画像アップロードエラー (${file.name}):`, error);
+        // バケットが存在しない場合のエラーメッセージを表示
+        if (error.message?.includes('Bucket not found') || error.message?.includes('not found')) {
+          console.error('⚠️ Storageバケット「post-images」が作成されていません。Supabaseダッシュボードでバケットを作成してください。');
+        }
+        continue;
+      }
+
+      // 公開URLを取得
+      const { data: urlData } = supabase.storage
+        .from('post-images')
+        .getPublicUrl(filePath);
+
+      if (urlData?.publicUrl) {
+        uploadedUrls.push(urlData.publicUrl);
+      }
+    }
+
+    return uploadedUrls;
+  }
+
   async onSubmit() {
     if (this.form.invalid) return;
 
@@ -204,7 +285,7 @@ export class Posting {
       const isEvent = v.type === 'event';
 
       // ✅ posts に存在する列だけ送る
-      const payload = {
+      const payload: any = {
         user_id: uid,
         type: v.type,
         title: v.title,
@@ -226,6 +307,7 @@ export class Posting {
         max_participants: isEvent && v.maxParticipants != null ? Number(v.maxParticipants) : null,
       };
 
+      // まず投稿を作成（画像URLは後で更新）
       const { data: inserted, error } = await supabase
         .from('posts')
         .insert(payload)
@@ -233,12 +315,30 @@ export class Posting {
         .single();
       if (error) throw error;
 
-      this.form.reset({ type: 'buy-sell', priceCurrency: 'GBP' });
-      if (inserted?.id) {
-        this.router.navigate(['/posts', inserted.id]);
+      const postId = inserted?.id;
+      if (!postId) throw new Error('投稿IDが取得できませんでした');
+
+      // 画像をアップロード
+      const imageUrls = await this.uploadImages(postId, uid);
+
+      // 画像URLがある場合は投稿を更新
+      if (imageUrls.length > 0) {
+        const { error: updateError } = await supabase
+          .from('posts')
+          .update({ image_urls: imageUrls })
+          .eq('id', postId);
+        if (updateError) throw updateError;
       }
+
+      // フォームと画像をリセット
+      this.form.reset({ type: 'buy-sell', priceCurrency: 'GBP' });
+      this.selectedImages = [];
+      this.imagePreviews = [];
+
+      this.router.navigate(['/posts', postId]);
     } catch (e) {
       console.error(e);
+      alert('投稿に失敗しました。もう一度お試しください。');
     } finally {
       this.loading = false;
     }
